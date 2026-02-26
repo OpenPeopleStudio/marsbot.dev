@@ -1,0 +1,142 @@
+---
+// Features — 9 feature cards + stats bar
+
+const stats = [
+  { value: "95", label: "tools" },
+  { value: "6", label: "providers" },
+  { value: "6", label: "channels" },
+  { value: "22", label: "skills" },
+];
+
+const features = [
+  {
+    title: "Agentic AI Runtime",
+    description: "95 tools, trust-gated access, MCP integration, retry logic, budget system.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.54 11.54l1.41 1.41M3.05 12.95l1.42-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    title: "Intelligent Routing",
+    description: "Heuristic classifier handles simple tasks instantly. Complex work gets the right model.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 4h4l2 4 2-4h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10 8l2 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M6 8l-2 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    title: "Integrated Terminal",
+    description: "Full terminal with node-pty on desktop, WebSocket on web.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M4 6l2.5 2L4 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 10h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    title: "Thread-based Chat",
+    description: "Real-time conversations with agents. Context carries across threads.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 2H2a1 1 0 00-1 1v8a1 1 0 001 1h2l2 2 2-2h6a1 1 0 001-1V3a1 1 0 00-1-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M5 7h6M5 5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    title: "Docker Sandboxing",
+    description: "Untrusted execution runs in containers. Workspace mounting, resource limits.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="5" width="3" height="3" rx="0.5" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="6" y="5" width="3" height="3" rx="0.5" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="10" y="5" width="3" height="3" rx="0.5" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="6" y="1" width="3" height="3" rx="0.5" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M1 11c0 1.1 3.13 2 7 2s7-.9 7-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M13 8.5c.5.3 1 .7 1 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    title: "Skills System",
+    description: "22 bundled behavior packs that teach agents how to use tools in context.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 1L9.8 5.5H14.5L10.6 8.3L12 13L8 10.3L4 13L5.4 8.3L1.5 5.5H6.2L8 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+    </svg>`,
+  },
+  {
+    title: "Channel System",
+    description: "Talk to agents through Telegram, Slack, Discord, WhatsApp, Email.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="3" cy="8" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+      <circle cx="13" cy="4" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+      <circle cx="13" cy="12" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M4.5 7.3L11.5 4.7M4.5 8.7L11.5 11.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    title: "Local-First",
+    description: "Agents run on local models first. Ollama, LM Studio — your machine, your data.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="9" width="12" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M5 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="8" cy="11.5" r="1" fill="currentColor"/>
+    </svg>`,
+  },
+  {
+    title: "Encrypted Vault",
+    description: "AES-256-GCM encrypted storage. Zero-knowledge design.",
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 1L2 3.5v4c0 3.3 2.5 6.4 6 7.5 3.5-1.1 6-4.2 6-7.5v-4L8 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M5.5 8l1.5 1.5 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
+  },
+];
+---
+
+<section id="features" class="py-24 px-4 sm:px-6 border-t border-[var(--border-subtle)]">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-12">
+      <div class="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest mb-8">
+        <span class="w-4 h-px bg-[var(--mars-orange)]"></span>
+        Capabilities
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-3">
+        Built to run in production.
+      </h2>
+      <p class="text-[var(--text-secondary)] max-w-xl">
+        Not a thin wrapper. Marsbot is a full agentic runtime with the primitives you need for real work.
+      </p>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="grid grid-cols-4 gap-px bg-[var(--border-subtle)] rounded-xl overflow-hidden mb-10 border border-[var(--border-subtle)]">
+      {stats.map((stat) => (
+        <div class="bg-[var(--surface-1)] px-4 py-4 text-center">
+          <div class="text-2xl font-mono font-bold text-[var(--mars-orange)]">{stat.value}</div>
+          <div class="text-xs font-mono text-[var(--text-muted)] mt-0.5 uppercase tracking-wider">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Feature grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {features.map((feature) => (
+        <div class="feature-card group">
+          <div class="flex items-start gap-3">
+            <div class="text-[var(--mars-orange)] mt-0.5 opacity-80 group-hover:opacity-100 transition-opacity shrink-0" set:html={feature.icon} />
+            <div>
+              <h3 class="font-mono font-semibold text-[var(--text-primary)] text-sm mb-1.5">
+                {feature.title}
+              </h3>
+              <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+                {feature.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>

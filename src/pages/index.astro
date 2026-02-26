@@ -2,6 +2,13 @@
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
+import HeroDemo from "../components/HeroDemo";
+import Mission from "../components/Mission.astro";
+import Features from "../components/Features.astro";
+import Platforms from "../components/Platforms.astro";
+import TrustLevels from "../components/TrustLevels.astro";
+import Roadmap from "../components/Roadmap.astro";
+import Changelog from "../components/Changelog.astro";
 import Footer from "../components/Footer.astro";
 ---
 
@@ -9,11 +16,14 @@ import Footer from "../components/Footer.astro";
   <Nav />
   <main>
     <Hero>
-      <!-- HeroDemo island will go here in Task 6 -->
-      <div class="max-w-3xl mx-auto text-center text-xs font-mono text-[var(--text-muted)]">
-        [ecosystem demo placeholder]
-      </div>
+      <HeroDemo client:visible />
     </Hero>
+    <Mission />
+    <Features />
+    <Platforms />
+    <TrustLevels />
+    <Roadmap />
+    <Changelog />
   </main>
   <Footer />
 </Base>

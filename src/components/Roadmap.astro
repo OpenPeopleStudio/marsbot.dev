@@ -1,0 +1,221 @@
+---
+// Roadmap — 4 phases with status indicators
+
+type PhaseStatus = "done" | "active" | "upcoming";
+
+interface Phase {
+  id: string;
+  label: string;
+  title: string;
+  description: string;
+  items: string[];
+  status: PhaseStatus;
+}
+
+const phases: Phase[] = [
+  {
+    id: "phase-1-2",
+    label: "Phase 1–2",
+    title: "Close the Loop + Quality",
+    description: "Foundational runtime shipped. Agentic loop, tool trust, MCP protocol, budget system.",
+    items: [
+      "95-tool agentic runtime",
+      "Trust-gated tool access",
+      "MCP integration",
+      "Budget + retry system",
+      "Thread-based chat",
+      "Skills framework (22 packs)",
+    ],
+    status: "done",
+  },
+  {
+    id: "phase-2-5",
+    label: "Phase 2.5",
+    title: "Verify & Wire",
+    description: "Hardening existing surfaces. Integration testing, channel stability, gateway reliability.",
+    items: [
+      "Channel system stability",
+      "Gateway daemon hardening",
+      "Docker sandboxing",
+      "Encrypted vault",
+      "Mobile companion beta",
+      "Desktop Sentry Mode",
+    ],
+    status: "active",
+  },
+  {
+    id: "phase-3",
+    label: "Phase 3",
+    title: "Complete the Vision",
+    description: "Identity layer and memory systems. The human data capsule starts to take shape.",
+    items: [
+      "Persistent agent memory",
+      "Identity graph",
+      "Personal space sync",
+      "Cross-device continuity",
+      "Local model priority routing",
+      "Offline-first fallback",
+    ],
+    status: "upcoming",
+  },
+  {
+    id: "phase-4",
+    label: "Phase 4",
+    title: "Ship v1.0",
+    description: "Public launch. Polished, documented, installable by anyone who wants to run their own intelligence.",
+    items: [
+      "Public installer",
+      "Full documentation",
+      "One-command setup",
+      "Community skills registry",
+      "Open source core",
+      "Mars-ready data format",
+    ],
+    status: "upcoming",
+  },
+];
+
+const statusConfig: Record<PhaseStatus, { label: string; color: string; borderColor: string }> = {
+  done: {
+    label: "Done",
+    color: "var(--success)",
+    borderColor: "rgba(61, 187, 111, 0.25)",
+  },
+  active: {
+    label: "In Progress",
+    color: "var(--mars-orange)",
+    borderColor: "rgba(232, 98, 42, 0.25)",
+  },
+  upcoming: {
+    label: "Upcoming",
+    color: "var(--text-muted)",
+    borderColor: "var(--border-subtle)",
+  },
+};
+
+// SVG icons for each status
+const statusIcon: Record<PhaseStatus, string> = {
+  done: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+    <path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+  active: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+    <path d="M8 5v3.5l2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+  upcoming: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 2"/>
+  </svg>`,
+};
+---
+
+<section id="roadmap" class="py-24 px-4 sm:px-6 border-t border-[var(--border-subtle)]">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-12">
+      <div class="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest mb-8">
+        <span class="w-4 h-px bg-[var(--mars-orange)]"></span>
+        Roadmap
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-3">
+        Building in the open.
+      </h2>
+      <p class="text-[var(--text-secondary)] max-w-xl">
+        Four phases from runtime to launch. Progress is real — not vaporware.
+      </p>
+    </div>
+
+    <!-- Phase list -->
+    <div class="space-y-4">
+      {phases.map((phase) => {
+        const config = statusConfig[phase.status];
+        const icon = statusIcon[phase.status];
+        return (
+          <div
+            class="bg-[var(--surface-1)] rounded-xl overflow-hidden border"
+            style={`border-color: ${config.borderColor};`}
+          >
+            <!-- Phase header -->
+            <div class="flex items-start gap-4 p-5">
+              <!-- Status icon -->
+              <div
+                class="mt-0.5 shrink-0"
+                style={`color: ${config.color};`}
+                set:html={icon}
+              />
+
+              <!-- Title block -->
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-3 mb-1 flex-wrap">
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-xs font-mono text-[var(--text-muted)]">{phase.label}</span>
+                    <h3 class="font-mono font-semibold text-[var(--text-primary)]">
+                      {phase.title}
+                    </h3>
+                  </div>
+                  <span
+                    class="text-xs font-mono px-2 py-0.5 rounded shrink-0"
+                    style={`color: ${config.color}; background: ${config.color}12; border: 1px solid ${config.color}30;`}
+                  >
+                    {config.label}
+                  </span>
+                </div>
+                <p class="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+                  {phase.description}
+                </p>
+
+                <!-- Items checklist -->
+                <div class="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                  {phase.items.map((item) => (
+                    <div class="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                      <span
+                        class="w-1 h-1 rounded-full shrink-0"
+                        style={`background: ${phase.status === "done" ? config.color : "var(--text-muted)"};`}
+                      ></span>
+                      <span style={phase.status === "done" ? "" : "opacity: 0.6;"}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <!-- Active phase progress bar -->
+            {phase.status === "active" && (
+              <div class="h-0.5 bg-[var(--border-subtle)]">
+                <div
+                  class="h-full"
+                  style="width: 55%; background: var(--mars-orange); opacity: 0.6;"
+                ></div>
+              </div>
+            )}
+
+            {/* Done phase full bar */}
+            {phase.status === "done" && (
+              <div class="h-0.5" style="background: rgba(61, 187, 111, 0.3);"></div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-10 flex items-center gap-4">
+      <a
+        href="https://github.com/open-people-studio"
+        class="btn-secondary text-xs font-mono"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 1C3.69 1 1 3.69 1 7c0 2.65 1.72 4.9 4.1 5.69.3.06.41-.13.41-.29v-1.02c-1.67.36-2.02-.8-2.02-.8-.27-.7-.67-.88-.67-.88-.55-.37.04-.36.04-.36.6.04.92.62.92.62.54.92 1.4.65 1.75.5.05-.39.21-.65.38-.8-1.33-.15-2.73-.67-2.73-2.96 0-.65.23-1.19.62-1.6-.06-.15-.27-.76.06-1.58 0 0 .51-.16 1.66.62A5.78 5.78 0 017 4.32c.51 0 1.03.07 1.51.2 1.15-.78 1.66-.62 1.66-.62.33.82.12 1.43.06 1.58.38.41.62.95.62 1.6 0 2.3-1.4 2.8-2.74 2.95.22.19.41.56.41 1.12v1.66c0 .16.11.35.41.29A6.007 6.007 0 0013 7c0-3.31-2.69-6-6-6z" fill="currentColor"/>
+        </svg>
+        Follow on GitHub
+      </a>
+      <span class="text-xs text-[var(--text-muted)] font-mono">
+        Building in public — no vaporware
+      </span>
+    </div>
+
+  </div>
+</section>

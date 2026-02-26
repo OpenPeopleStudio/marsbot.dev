@@ -1,0 +1,144 @@
+---
+// Platforms — surface availability grid
+
+type Status = "available" | "beta" | "coming-soon";
+
+interface Platform {
+  name: string;
+  subtitle: string;
+  description: string;
+  status: Status;
+  icon: string;
+}
+
+const platforms: Platform[] = [
+  {
+    name: "Web",
+    subtitle: "marsbot.dev",
+    description: "Chat with agents, manage threads, review memory, and browse your skill library from any browser.",
+    status: "available",
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M10 2c0 0-4 3-4 8s4 8 4 8M10 2c0 0 4 3 4 8s-4 8-4 8" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M2 10h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    name: "Desktop",
+    subtitle: "mars-mac",
+    description: "Native macOS app with Sentry Mode, full terminal integration, and always-on local agent runtime.",
+    status: "beta",
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="3" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M6.5 17h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M10 14v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    name: "Mobile",
+    subtitle: "mars-mobile",
+    description: "iOS companion app. Chat on the go, receive agent updates, and manage your personal space remotely.",
+    status: "beta",
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5.5" y="1.5" width="9" height="17" rx="2" stroke="currentColor" stroke-width="1.4"/>
+      <circle cx="10" cy="15.5" r="0.75" fill="currentColor"/>
+    </svg>`,
+  },
+  {
+    name: "CLI / TUI",
+    subtitle: "terminal native",
+    description: "Full-featured terminal interface. Run agents, manage threads, pipe output — without leaving your shell.",
+    status: "available",
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="3.5" width="16" height="13" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M5.5 8L8.5 10 5.5 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10 12h4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    name: "Gateway Daemon",
+    subtitle: "always-on server",
+    description: "Headless background process. Keeps agents alive, routes device RPCs, and relays channel messages.",
+    status: "available",
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="5" width="16" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+      <circle cx="5.5" cy="10" r="1" fill="currentColor"/>
+      <path d="M8.5 10h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M8.5 7.5h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M8.5 12.5h5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    name: "Channels",
+    subtitle: "Telegram · Slack · Discord",
+    description: "Agents receive and respond via Telegram, Slack, Discord, WhatsApp, and Email — meeting you where you are.",
+    status: "beta",
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="4" cy="10" r="2" stroke="currentColor" stroke-width="1.4"/>
+      <circle cx="16" cy="5" r="2" stroke="currentColor" stroke-width="1.4"/>
+      <circle cx="16" cy="15" r="2" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M6 9.2L14 5.8M6 10.8L14 14.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>`,
+  },
+];
+
+const statusConfig: Record<Status, { label: string; color: string }> = {
+  available: { label: "Available", color: "var(--success)" },
+  beta: { label: "Beta", color: "var(--mars-orange)" },
+  "coming-soon": { label: "Coming Soon", color: "var(--text-muted)" },
+};
+---
+
+<section id="platforms" class="py-24 px-4 sm:px-6 border-t border-[var(--border-subtle)]">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-12">
+      <div class="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest mb-8">
+        <span class="w-4 h-px bg-[var(--mars-orange)]"></span>
+        Surfaces
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-3">
+        Every screen. Your agents.
+      </h2>
+      <p class="text-[var(--text-secondary)] max-w-xl">
+        Marsbot runs natively on each platform rather than wrapping a web view. One runtime, many surfaces.
+      </p>
+    </div>
+
+    <!-- Platform grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {platforms.map((platform) => {
+        const status = statusConfig[platform.status];
+        return (
+          <div class="bg-[var(--surface-1)] border border-[var(--border-subtle)] rounded-xl p-5 hover:border-[var(--border-medium)] transition-colors group">
+            <!-- Icon + status -->
+            <div class="flex items-start justify-between mb-4">
+              <div class="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors" set:html={platform.icon} />
+              <span
+                class="text-xs font-mono px-2 py-0.5 rounded border"
+                style={`color: ${status.color}; border-color: ${status.color}; opacity: 0.9;`}
+              >
+                {status.label}
+              </span>
+            </div>
+
+            <!-- Name -->
+            <h3 class="font-mono font-semibold text-[var(--text-primary)] mb-0.5">
+              {platform.name}
+            </h3>
+            <div class="text-xs font-mono text-[var(--text-muted)] mb-3">
+              {platform.subtitle}
+            </div>
+
+            <!-- Description -->
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+              {platform.description}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+
+  </div>
+</section>

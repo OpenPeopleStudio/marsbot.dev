@@ -1,0 +1,123 @@
+---
+// TrustLevels — 5 trust tiers displayed vertically
+
+const levels = [
+  {
+    number: "L1",
+    role: "Observer",
+    description: "Read-only. Watch, report, and take notes. No write access, no external calls.",
+    color: "#505b6b",
+    capabilities: ["Read files", "Generate reports", "Log observations"],
+  },
+  {
+    number: "L2",
+    role: "Assistant",
+    description: "Draft, suggest, and prepare content. Can write to staging areas, cannot commit.",
+    color: "#5b8abf",
+    capabilities: ["Draft content", "Prepare suggestions", "Stage changes"],
+  },
+  {
+    number: "L3",
+    role: "Worker",
+    description: "Execute tasks in sandbox. Web fetch, file operations within container bounds.",
+    color: "#d4a033",
+    capabilities: ["Sandbox execution", "Web fetch", "File operations"],
+  },
+  {
+    number: "L4",
+    role: "Collaborator",
+    description: "External access. Draft emails, run commands on host, interact with APIs.",
+    color: "#d47833",
+    capabilities: ["External API calls", "Host commands", "Email drafting"],
+  },
+  {
+    number: "L5",
+    role: "Delegate",
+    description: "Full autonomy within configured guardrails. Acts on your behalf without confirmation.",
+    color: "#d45c5c",
+    capabilities: ["Full autonomy", "Credential access", "Cross-system actions"],
+  },
+];
+---
+
+<section id="trust" class="py-24 px-4 sm:px-6 border-t border-[var(--border-subtle)]">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-12">
+      <div class="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest mb-8">
+        <span class="w-4 h-px bg-[var(--mars-orange)]"></span>
+        Trust Model
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-3">
+        You control what agents can do.
+      </h2>
+      <p class="text-[var(--text-secondary)] max-w-xl">
+        Every agent operates within a trust level you assign. Capability expands as you grant it —
+        never the other way around.
+      </p>
+    </div>
+
+    <!-- Trust levels -->
+    <div class="space-y-3">
+      {levels.map((level) => (
+        <div
+          class="flex gap-5 p-5 bg-[var(--surface-1)] border border-[var(--border-subtle)] rounded-xl hover:border-[var(--border-medium)] transition-colors group"
+        >
+          <!-- Level indicator -->
+          <div
+            class="flex flex-col items-center gap-2 shrink-0"
+          >
+            <div
+              class="w-10 h-10 rounded-lg flex items-center justify-center font-mono font-bold text-sm"
+              style={`background: ${level.color}18; color: ${level.color}; border: 1px solid ${level.color}30;`}
+            >
+              {level.number}
+            </div>
+            <!-- Connector line (except last) -->
+            <div class="w-px flex-1 min-h-[8px]" style={`background: ${level.color}20;`}></div>
+          </div>
+
+          <!-- Content -->
+          <div class="flex-1 pt-1">
+            <div class="flex items-baseline gap-3 mb-1.5">
+              <h3
+                class="font-mono font-semibold text-base"
+                style={`color: ${level.color};`}
+              >
+                {level.role}
+              </h3>
+              <span class="text-xs font-mono text-[var(--text-muted)]">{level.number}</span>
+            </div>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">
+              {level.description}
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {level.capabilities.map((cap) => (
+                <span
+                  class="text-xs font-mono px-2 py-0.5 rounded"
+                  style={`background: ${level.color}10; color: ${level.color}; border: 1px solid ${level.color}20;`}
+                >
+                  {cap}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Footer note -->
+    <div class="mt-8 flex items-start gap-3 p-4 bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[var(--mars-orange)] shrink-0 mt-0.5">
+        <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M8 5v4M8 11v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <p class="text-xs text-[var(--text-muted)] leading-relaxed">
+        Trust levels are assigned per-agent and per-thread. You can always reduce or revoke access.
+        Sensitive operations at L4+ require explicit capability grants in your configuration.
+      </p>
+    </div>
+
+  </div>
+</section>

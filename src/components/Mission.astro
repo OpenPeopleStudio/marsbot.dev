@@ -1,0 +1,156 @@
+---
+// Mission — Cargo Manifest thesis + Mission pillars
+const cargoCards = [
+  {
+    id: "hardware",
+    label: "Hardware",
+    items: ["Servers", "Sensors", "Compute", "Fabricators"],
+    highlighted: false,
+  },
+  {
+    id: "biology",
+    label: "Biology",
+    items: ["Seeds", "Embryos", "Microbiomes", "Medical"],
+    highlighted: false,
+  },
+  {
+    id: "identity",
+    label: "Identity",
+    items: ["Memory", "Agency", "Values", "Continuity"],
+    highlighted: true,
+  },
+];
+
+const pillars = [
+  {
+    number: "01",
+    title: "Local-first agents",
+    description:
+      "Your agents run on your hardware. Data stays in your possession. No mandatory cloud dependency — intelligence at the edge, owned by you.",
+  },
+  {
+    number: "02",
+    title: "Home / edge unification",
+    description:
+      "Your home server and mobile devices form a single coherent system. Agents share context, tools, and state across all surfaces you control.",
+  },
+  {
+    number: "03",
+    title: "Agency through robots",
+    description:
+      "Marsbot is infrastructure for autonomous action — not just answers. Agents that act, verify, and complete — not just suggest.",
+  },
+];
+---
+
+<section id="mission" class="py-24 px-4 sm:px-6 border-t border-[var(--border-subtle)]">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Cargo Manifest -->
+    <div class="mb-20">
+      <div class="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest mb-8">
+        <span class="w-4 h-px bg-[var(--mars-orange)]"></span>
+        Cargo Manifest
+      </div>
+
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-3">
+        What should we ship to Mars?
+      </h2>
+      <p class="text-[var(--text-secondary)] mb-10 max-w-xl">
+        Every serious Mars plan carries hardware and biology. But there is a third category — the one that gets left behind.
+      </p>
+
+      <div class="grid sm:grid-cols-3 gap-4 mb-12">
+        {cargoCards.map((card) => (
+          <div
+            class={`rounded-xl p-5 border ${
+              card.highlighted
+                ? "border-[var(--mars-orange)] bg-[var(--surface-1)]"
+                : "border-[var(--border-subtle)] bg-[var(--surface-1)]"
+            }`}
+            style={card.highlighted ? "box-shadow: 0 0 24px rgba(232,98,42,0.12)" : ""}
+          >
+            <div class="flex items-center justify-between mb-4">
+              <span
+                class="text-xs font-mono uppercase tracking-widest"
+                style={`color: ${card.highlighted ? "var(--mars-orange)" : "var(--text-muted)"}`}
+              >
+                {card.label}
+              </span>
+              {card.highlighted && (
+                <span class="text-xs font-mono px-2 py-0.5 rounded bg-[var(--mars-orange)] text-[var(--text-inverse)]">
+                  missing
+                </span>
+              )}
+            </div>
+            <ul class="space-y-1.5">
+              {card.items.map((item) => (
+                <li class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                  <span
+                    class="w-1 h-1 rounded-full shrink-0"
+                    style={`background: ${card.highlighted ? "var(--mars-orange)" : "var(--text-muted)"}`}
+                  ></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <!-- Blockquote -->
+      <blockquote class="border-l-2 border-[var(--mars-orange)] pl-5 py-1 mb-8">
+        <p class="text-[var(--text-primary)] font-mono text-sm leading-relaxed italic">
+          "When consciousness reaches new planets, it should not arrive as a blank slate.
+          We carry our tools, our biology — but not ourselves."
+        </p>
+      </blockquote>
+
+      <!-- Connector text -->
+      <div class="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-xl p-6">
+        <p class="text-[var(--text-secondary)] text-sm leading-relaxed mb-3">
+          Marsbot is being built as a <span class="text-[var(--text-primary)] font-medium">human data time capsule</span> —
+          a persistent, portable record of who you are: your preferences, decisions, memory, values, and agency patterns.
+        </p>
+        <p class="text-[var(--text-secondary)] text-sm leading-relaxed">
+          Not a chatbot. Not a productivity tool. A substrate for identity continuity —
+          so that wherever you go, intelligence that is genuinely <em>yours</em> travels with you.
+        </p>
+      </div>
+    </div>
+
+    <!-- Mission Pillars -->
+    <div>
+      <div class="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest mb-8">
+        <span class="w-4 h-px bg-[var(--mars-orange)]"></span>
+        Mission
+      </div>
+
+      <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-3">
+        Infrastructure for sovereign intelligence.
+      </h2>
+      <p class="text-[var(--text-secondary)] mb-10 max-w-xl">
+        Three technical bets that define what marsbot is actually building.
+      </p>
+
+      <div class="space-y-px">
+        {pillars.map((pillar) => (
+          <div class="flex gap-6 p-6 bg-[var(--surface-1)] border border-[var(--border-subtle)] first:rounded-t-xl last:rounded-b-xl hover:border-[var(--border-medium)] transition-colors">
+            <div class="font-mono text-xs text-[var(--mars-orange)] opacity-60 pt-0.5 shrink-0 w-6">
+              {pillar.number}
+            </div>
+            <div>
+              <h3 class="font-mono font-semibold text-[var(--text-primary)] mb-2">
+                {pillar.title}
+              </h3>
+              <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+                {pillar.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
