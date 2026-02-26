@@ -1,0 +1,51 @@
+---
+import Base from "./Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const docs = (await getCollection("docs")).sort((a, b) => a.data.order - b.data.order);
+const currentPath = Astro.url.pathname;
+---
+
+<Base title={`${title} — marsbot docs`} description={description}>
+  <Nav />
+  <div class="pt-14 min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="hidden lg:block w-64 shrink-0 border-r border-[var(--border-subtle)] p-6 pt-10 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
+      <h3 class="text-xs font-mono font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">Documentation</h3>
+      <nav class="space-y-1">
+        {docs.map((doc) => {
+          const href = `/docs/${doc.id}`;
+          const isActive = currentPath === href || currentPath === `${href}/`;
+          return (
+            <a
+              href={href}
+              class:list={[
+                "block px-3 py-1.5 rounded text-sm transition-colors",
+                isActive ? "text-[var(--mars-orange)] bg-[var(--surface-2)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              ]}
+            >
+              {doc.data.title}
+            </a>
+          );
+        })}
+      </nav>
+    </aside>
+    <!-- Content -->
+    <main class="flex-1 max-w-3xl px-6 sm:px-10 py-10">
+      <h1 class="text-2xl font-mono font-bold text-[var(--text-primary)] mb-2">{title}</h1>
+      <p class="text-sm text-[var(--text-muted)] mb-8">{description}</p>
+      <article class="prose prose-invert prose-sm max-w-none">
+        <slot />
+      </article>
+    </main>
+  </div>
+  <Footer />
+</Base>
