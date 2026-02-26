@@ -1,0 +1,272 @@
+---
+title: "Getting Started"
+description: "Set up marsbot locally and create your first agent."
+order: 4
+---
+
+# Getting Started
+
+This guide walks you through setting up marsbot on your own machine, connecting a language model provider, starting the gateway, and having your first conversation with an agent.
+
+marsbot runs on your hardware. There is no cloud signup, no hosted runtime, no data sent to a marsbot server. You own the stack.
+
+## Prerequisites
+
+Before you start, make sure you have:
+
+- **Node.js 22+** — marsbot uses native async features and the built-in test runner that require Node 22. Check with `node --version`.
+- **A Supabase account** — marsbot uses Supabase for its database, Realtime coordination, and auth. The free tier is enough to get started.
+- **An LLM provider API key** — Anthropic, OpenAI, Gemini, Groq, or OpenRouter. Ollama works if you want fully local inference with no API key.
+- **Docker** (optional) — required for the execution sandbox at trust level L4+. Not needed for L1-L3 agents.
+
+## 1. Clone and Install
+
+```bash
+git clone https://github.com/open-people-studio/marsbot
+cd marsbot
+npm install
+```
+
+marsbot is a monorepo. `npm install` at the root installs all package dependencies and links them together.
+
+Build the packages:
+
+```bash
+npm run build
+```
+
+This compiles TypeScript across all packages and produces the CLI binary at `packages/cli/dist/marsbot.js`. Link it globally so you can use `marsbot` from anywhere:
+
+```bash
+npm link
+marsbot --version
+```
+
+## 2. Set Up Supabase
+
+### Create a project
+
+Go to [supabase.com](https://supabase.com) and create a new project. Note your **project URL** and **anon key** from the project settings — you will need them in the next step.
+
+### Apply the schema
+
+marsbot ships with a migration file that creates all required tables, indexes, and RLS policies.
+
+```bash
+marsbot db migrate --url "postgresql://postgres:[password]@[host]:5432/postgres"
+```
+
+Replace the connection string with the one from your Supabase project settings (Settings > Database > Connection string).
+
+If you prefer to run the migration manually, the SQL files are in `packages/shared/migrations/`. Apply them in order.
+
+## 3. Configure marsbot
+
+Run the interactive setup:
+
+```bash
+marsbot config init
+```
+
+This creates a config file at `~/.marsbot/config.json` and walks you through:
+
+1. Your Supabase project URL and anon key
+2. Your primary LLM provider and API key
+3. Where to store the gateway PID and logs
+4. Your display name (used in agent conversations)
+
+You can also write the config file directly:
+
+```json
+{
+  "supabase": {
+    "url": "https://your-project.supabase.co",
+    "anon_key": "your-anon-key"
+  },
+  "providers": {
+    "default": "anthropic",
+    "anthropic": {
+      "api_key": "sk-ant-..."
+    }
+  },
+  "gateway": {
+    "port": 3100,
+    "pid_file": "~/.marsbot/gateway.pid",
+    "log_file": "~/.marsbot/gateway.log"
+  },
+  "user": {
+    "display_name": "Your Name"
+  }
+}
+```
+
+### Adding more providers
+
+You can configure multiple providers and switch between them per-agent:
+
+```json
+{
+  "providers": {
+    "default": "anthropic",
+    "anthropic": { "api_key": "sk-ant-..." },
+    "openai": { "api_key": "sk-..." },
+    "groq": { "api_key": "gsk_..." },
+    "ollama": { "base_url": "http://localhost:11434" }
+  }
+}
+```
+
+## 4. Start the Gateway
+
+```bash
+marsbot gateway start
+```
+
+The gateway starts as a background daemon. Verify it is running:
+
+```bash
+marsbot gateway status
+```
+
+You should see something like:
+
+```
+Gateway running
+  PID:     12345
+  Port:    3100
+  Uptime:  3s
+  Workers: 0 active
+```
+
+To view live logs:
+
+```bash
+marsbot gateway logs --follow
+```
+
+### Starting a worker
+
+The gateway routes requests; workers execute them. Start a worker in a separate terminal:
+
+```bash
+marsbot worker start
+```
+
+Workers subscribe to Supabase Realtime and process requests as they arrive. You can run multiple workers for parallel execution — they coordinate through the database with no direct communication between them.
+
+For local personal use, one worker is enough.
+
+## 5. Create Your First Agent
+
+Agents are defined in YAML files. Create a file called `my-first-agent.yaml`:
+
+```yaml
+name: my-assistant
+display_name: Assistant
+description: A helpful general-purpose assistant
+provider: anthropic
+model: claude-opus-4-6
+trust_level: 2
+system_prompt: |
+  You are a helpful assistant. You can fetch web pages and read files
+  to help answer questions. Be direct and concise.
+tools:
+  - web_fetch
+  - read_memory
+  - write_memory
+```
+
+Register the agent:
+
+```bash
+marsbot agent create --file my-first-agent.yaml
+```
+
+List your agents to confirm:
+
+```bash
+marsbot agent list
+```
+
+```
+ID                    Name             Trust  Provider   Model
+──────────────────────────────────────────────────────────────────
+agt_01HXYZ...         my-assistant     L2     anthropic  claude-opus-4-6
+```
+
+## 6. Send Your First Message
+
+Start a chat session with your new agent:
+
+```bash
+marsbot chat --agent my-assistant
+```
+
+The TUI opens with your agent loaded. Type a message and press Enter:
+
+```
+You: What is the current Node.js LTS version?
+Assistant: [web_fetch → nodejs.org/en/download] Node.js 22 is the current LTS release
+          (Long Term Support), with active support through October 2025 and
+          security maintenance until April 2027.
+You: _
+```
+
+Press `Ctrl+C` or type `/quit` to exit the session.
+
+### One-shot from the command line
+
+You can also send a single message without opening the interactive TUI:
+
+```bash
+marsbot chat --agent my-assistant --message "Summarize what marsbot is in two sentences"
+```
+
+This is useful for scripting and piping output to other tools.
+
+## Next Steps
+
+You now have a working marsbot installation with a local gateway, a worker, and your first L2 agent.
+
+### Add more trust levels
+
+Edit your agent YAML to raise the trust level and add more tools. See the [Trust Model](/docs/trust-model) doc for what each level enables.
+
+### Explore the TUI
+
+The full TUI has 7 views accessible via keyboard shortcuts. Open it with `marsbot tui` and press `?` to see the keybinding reference.
+
+### Connect the Chrome extension
+
+Install the marsbot Chrome extension, point it at `http://localhost:3100`, and you can use your agents as a side panel while browsing. The extension reads page content and selection as context.
+
+### Set up the vault
+
+Store API keys and credentials in the encrypted vault so agents can use them without you pasting keys into prompts:
+
+```bash
+marsbot vault set github_token --value "ghp_..."
+```
+
+Grant an agent access to it in the agent YAML:
+
+```yaml
+vault_grants:
+  - github_token
+```
+
+### Run multiple agents
+
+Create additional agent YAML files with different system prompts, tools, and trust levels. Specialists — a coding agent, a research agent, a writing agent — work better than one generalist configured to do everything.
+
+## Troubleshooting
+
+**Gateway won't start**: Check that port 3100 is not in use with `lsof -i :3100`. Change the port in config if needed.
+
+**Worker not picking up requests**: Make sure the worker is running (`marsbot worker status`) and that your Supabase Realtime connection is healthy. Check `marsbot gateway logs` for connection errors.
+
+**LLM API errors**: Verify your API key is correct in `~/.marsbot/config.json`. Check provider-specific rate limits if you are seeing 429 responses.
+
+**Schema errors on startup**: Re-run `marsbot db migrate` if you see missing table errors after an upgrade — new migrations may have been added.
+
+For more help, check the [GitHub issues](https://github.com/open-people-studio/marsbot/issues) or the community Discord.

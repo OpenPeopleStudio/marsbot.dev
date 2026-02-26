@@ -1,0 +1,169 @@
+---
+title: "Architecture Overview"
+description: "How marsbot works: gateway daemon, worker pool, multi-surface, and data layer."
+order: 1
+---
+
+# Architecture Overview
+
+marsbot is a personal AI agent platform built for people who want to own their agent infrastructure. Instead of delegating to a hosted black box, marsbot runs a gateway daemon on hardware you control — your laptop, a home server, a VPS — and connects every surface (terminal, web, mobile, Chrome) to that single gateway.
+
+## Gateway Daemon
+
+The gateway is the heart of marsbot. It is a standalone Node.js process that speaks JSON-RPC 2.0 over both HTTP and WebSocket. Every client — whether it is the TUI, the web dashboard, the mobile app, or the CLI — connects to the gateway to send messages and receive responses.
+
+```
+┌───────────────────────────────────────────────────────┐
+│                    Gateway Daemon                     │
+│                                                       │
+│   JSON-RPC 2.0 (HTTP + WebSocket)                     │
+│   ┌──────────┐  ┌──────────┐  ┌──────────────────┐   │
+│   │ Sessions │  │ Request  │  │  Tool Dispatcher  │   │
+│   │ Manager  │  │  Queue   │  │  + Approval Gate  │   │
+│   └──────────┘  └──────────┘  └──────────────────┘   │
+│   ┌──────────┐  ┌──────────┐  ┌──────────────────┐   │
+│   │ Provider │  │  Plugin  │  │   Rate Limiter    │   │
+│   │ Registry │  │  Loader  │  │   + Cost Tracker  │   │
+│   └──────────┘  └──────────┘  └──────────────────┘   │
+└───────────────────────────────────────────────────────┘
+```
+
+The gateway is intentionally thin. It does not store chat history itself — that lives in Supabase. It does not execute tools directly — that is delegated to the worker pool. Its job is request routing, session management, and policy enforcement.
+
+### Key Responsibilities
+
+- **Session lifecycle**: create, resume, expire sessions across reconnects
+- **Request queuing**: buffer and prioritize incoming chat requests
+- **Tool dispatch**: route tool calls through approval gates and the sandbox
+- **Provider routing**: pick the right LLM provider per request based on config
+- **Rate limiting**: enforce per-user and per-model token budgets
+- **Plugin loading**: dynamically load and sandbox npm-based plugins
+
+The gateway starts with a single command:
+
+```bash
+marsbot gateway start
+```
+
+It runs as a background daemon, writes a PID file, and logs to a configurable path. You can check status with `marsbot gateway status` and tail logs with `marsbot gateway logs`.
+
+## Worker Pool
+
+Workers are the execution layer. Each worker is a lightweight process that subscribes to the Supabase Realtime channel, claims incoming requests with an optimistic lock, runs the agentic loop, and delivers responses back through the gateway.
+
+```
+Supabase Realtime
+       │
+       ▼
+  ┌─────────┐    claim request    ┌──────────────────┐
+  │ Worker  │ ─────────────────── │  Agent Runtime   │
+  │ Process │                     │  - Tool loop     │
+  └─────────┘                     │  - LLM calls     │
+       │                          │  - Memory writes │
+       │   deliver response        └──────────────────┘
+       ▼
+  Gateway → Client
+```
+
+Workers are stateless and horizontally scalable. You can run multiple workers on different machines — they coordinate exclusively through the database. A single laptop is enough for personal use. A small VPS handles multi-user scenarios comfortably.
+
+### Agentic Loop
+
+Each agent request goes through the following loop:
+
+1. Parse the user message and build the initial prompt
+2. Call the LLM provider with tools attached
+3. If the model requests a tool call, dispatch it (with approval if required)
+4. Append the tool result and loop back to step 2
+5. When the model produces a final response, deliver it and write a reflection memory
+
+The loop has configurable retry with exponential backoff, a maximum step count, and a timeout. These are all tunable per-agent in the config.
+
+## Multi-Surface Architecture
+
+marsbot is designed so the same gateway serves every interface. There is no surface-specific backend. The protocol is the same; only the rendering differs.
+
+```
+┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐
+│   TUI    │  │   Web    │  │  Mobile  │  │   CLI    │  │ Chrome │
+│(terminal)│  │dashboard │  │React Nat.│  │  binary  │  │  ext.  │
+└────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └───┬────┘
+     │              │              │              │             │
+     └──────────────┴──────────────┴──────────────┴─────────────┘
+                                   │
+                            JSON-RPC + WS
+                                   │
+                          ┌────────▼────────┐
+                          │  Gateway Daemon  │
+                          └─────────────────┘
+```
+
+This means a conversation you start in the terminal continues seamlessly in the web dashboard. Notifications from your phone arrive in the same thread you are working in on your laptop. The gateway holds the session state; the surface is just a view.
+
+### Supported Surfaces
+
+| Surface | Protocol | Status |
+|---------|----------|--------|
+| TUI (terminal) | WebSocket | Stable |
+| Web dashboard | WebSocket + REST | Stable |
+| Mobile (React Native) | WebSocket | Stable |
+| CLI (one-shot) | HTTP | Stable |
+| Chrome extension | HTTP (side panel) | Beta |
+
+## Data Layer
+
+marsbot uses Supabase as its data layer. Supabase provides:
+
+- **Postgres**: the primary database for all structured data
+- **Realtime**: worker coordination and live updates to clients
+- **Auth**: user identity and session management
+- **Storage**: file attachments, memory blobs, exported logs
+
+### Core Schema
+
+```
+threads          — conversation containers, per-agent config
+messages         — individual turns with role, content, tool calls
+agents           — agent definitions with provider, tools, skills config
+tools            — tool registry with schema, approval policy, sandbox config
+memories         — key-value agent memory with expiry and scope
+events           — audit log of all tool calls, approvals, errors
+vault            — encrypted credentials with key rotation
+```
+
+All tables use Row Level Security (RLS). Users can only see their own data. Agent-to-agent sharing is controlled through explicit grants in the `shares` table.
+
+### Realtime Coordination
+
+Workers and clients both subscribe to Supabase Realtime. This is what allows multiple workers to coordinate without a message broker, and what allows clients to receive streamed responses without polling.
+
+```
+Client ──subscribe──▶ Supabase Realtime ◀──publish── Worker
+                              │
+                         Postgres WAL
+```
+
+## Package Structure
+
+marsbot is a monorepo with 22+ packages. The boundary is clean: each package has a single responsibility and explicit dependencies.
+
+```
+packages/
+├── gateway/          — daemon, router, session manager
+├── agent/            — runtime, agentic loop, tool dispatch
+├── tools/            — built-in tools (web, file, code, data)
+├── skills/           — bundled skill packs and SKILL.md loader
+├── providers/        — LLM adapters (Anthropic, OpenAI, Gemini, Groq, Ollama, OpenRouter)
+├── channels/         — surface adapters (web, mobile, CLI, TUI, Slack, webhook)
+├── sandbox/          — Docker-based execution isolation
+├── vault/            — encrypted credential storage
+├── rate-limiter/     — token bucket, cost tracker
+├── mcp/              — Model Context Protocol bridge
+├── plugin-sdk/       — npm plugin interface and loader
+├── workflow/         — step graph, branching, fan-out
+├── tui/              — Ink-based terminal UI
+├── cli/              — binary entrypoint, 8 commands
+└── shared/           — types, utilities, schema definitions
+```
+
+Each package is independently testable and can be imported as a library. If you only want the agent runtime with no gateway overhead, you can use `@marsbot/agent` directly.

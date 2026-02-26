@@ -1,0 +1,148 @@
+---
+title: "Trust Model"
+description: "How marsbot agents earn access through demonstrated competence."
+order: 2
+---
+
+# Trust Model
+
+marsbot agents do not start with full access to your system. They earn it. The trust model is a five-level progression where each level unlocks a new tier of capabilities. An agent advances by using its current tools responsibly, staying within policy, and demonstrating the judgment needed for the next level.
+
+This is not a permissions checkbox. It is a design principle: capability should be proportional to demonstrated competence.
+
+## Why a Trust Ladder Matters
+
+Most agent systems give every agent the same set of tools from the start. That is efficient when you trust the agent completely. For a personal platform running on your own hardware, with access to your files, credentials, and communications, it is the wrong default.
+
+The trust ladder lets you start safe and expand deliberately. A new agent you are experimenting with cannot read your files or run shell commands. An agent you have used for months and configured carefully can. The system enforces this — it is not just a guideline.
+
+## The Five Levels
+
+### L1 — Sandboxed
+
+The default for every new agent. L1 agents can only interact with the world through the chat interface. They have no external tool access.
+
+**Available tools:**
+- `chat_response` — send a message back to the user
+- `ask_clarification` — request more information before proceeding
+- `describe_plan` — outline what the agent would do, for user review
+
+**Use case:** evaluating a new agent, running untrusted prompts, public-facing interactions where you want a strict boundary.
+
+L1 agents are still useful. A well-crafted L1 agent can draft documents, answer questions, brainstorm, and summarize — as long as all inputs come through the conversation.
+
+---
+
+### L2 — Reader
+
+L2 agents can read from the world but cannot write or execute. This covers fetching content and reading from approved data sources.
+
+**Adds on top of L1:**
+- `web_fetch` — fetch a URL and return its content
+- `read_file` — read a file from an approved directory
+- `list_dir` — list files in an approved directory
+- `read_memory` — read from the agent's own memory store
+- `search_docs` — search an indexed document collection
+
+**Use case:** research assistants, question-answering over your notes, content summarization from URLs.
+
+Granting L2 does not mean the agent can read anything. The `read_file` and `list_dir` tools respect an allowlist of directories configured per-agent. By default, only the agent's own workspace directory is accessible.
+
+---
+
+### L3 — Writer
+
+L3 agents can write data, create files, and modify memory. They still cannot execute code or make network requests that write state.
+
+**Adds on top of L2:**
+- `write_file` — write to a file in an approved directory
+- `apply_patch` — apply a unified diff to an existing file
+- `write_memory` — write to the agent's memory store
+- `create_note` — create a note in the connected notes system
+- `web_search` — perform a web search (read-only, no side effects)
+
+**Use case:** writing assistants, note-taking agents, coding helpers that propose and apply changes, agents that maintain their own knowledge base.
+
+L3 is where most trusted personal agents live. The combination of reading the world and being able to write files and memory covers a wide range of useful automation without touching execution.
+
+---
+
+### L4 — Executor
+
+L4 agents can run code and shell commands inside the sandbox. This is the first level where an agent can cause side effects outside the marsbot system.
+
+**Adds on top of L3:**
+- `run_code` — execute code in a sandboxed container (Python, JS, shell)
+- `run_shell` — run a shell command in the sandbox
+- `edit_file` — interactive file editing with diff preview
+- `extract_json` — run jq-style queries against data
+- `call_tool` — call another registered tool by name
+
+**Use case:** coding agents, data processing pipelines, automation scripts, agents that need to verify their own output by running it.
+
+All execution at L4 happens inside Docker containers with strict resource limits (CPU, memory, network, filesystem). The sandbox cannot reach the host filesystem or network without explicit mounts and firewall rules you configure.
+
+---
+
+### L5 — Trusted
+
+L5 agents have access to the full tool set, including credential vault access, outbound network calls with side effects, and the ability to spawn sub-agents. This level is reserved for agents you have worked with extensively and configured carefully.
+
+**Adds on top of L4:**
+- `vault_read` — read credentials from the encrypted vault
+- `http_request` — make arbitrary HTTP requests (with SSRF guard)
+- `send_email` — send email via a configured provider
+- `spawn_agent` — create and run a sub-agent
+- `manage_workflow` — create and trigger workflow steps
+- `mcp_call` — call tools exposed by connected MCP servers
+
+**Use case:** fully autonomous agents, integration orchestrators, agents that manage other agents, your most trusted personal automation.
+
+L5 agents are subject to the same rate limiting and approval policies as all other agents. The difference is that the approval policy can be configured to auto-approve known-safe tool patterns, reducing friction for trusted agents you have already reviewed.
+
+---
+
+## Advancing Trust Levels
+
+Trust levels are set per-agent in the agent configuration. There is no automatic promotion. You decide when an agent is ready for the next level, based on your own experience using it.
+
+```json
+{
+  "agent": "research-assistant",
+  "trust_level": 3,
+  "allowed_dirs": ["/home/user/notes", "/home/user/projects/research"],
+  "approval_policy": "ask_for_new_tools"
+}
+```
+
+### Approval Policies
+
+Each trust level can be paired with an approval policy that controls how tool calls are handled:
+
+| Policy | Behavior |
+|--------|----------|
+| `block` | No tools allowed (sandbox override) |
+| `ask_always` | Every tool call requires user approval |
+| `ask_for_new_tools` | Approve once per tool, remember the decision |
+| `ask_for_destructive` | Only ask for write/delete/execute operations |
+| `auto_approve` | All tools auto-approved (L5 only, requires explicit opt-in) |
+
+The default policy for new agents is `ask_for_new_tools`. You see every tool the agent wants to use the first time, approve or deny it, and then that decision is remembered for future calls in the same session.
+
+## Security Guarantees
+
+The trust model is enforced in the gateway, not in the agent prompt. An agent prompt that says "I am an L5 agent" has no effect. The gateway reads the trust level from the database and gates tool dispatch accordingly. An L2 agent literally cannot call `run_shell` — the gateway will reject the request before it reaches any execution layer.
+
+This means the trust model is robust against prompt injection. Even if a malicious instruction in a web page tells your research agent to run a shell command, the gateway will reject the tool call because the agent's configured trust level does not allow it.
+
+## Vault Access and Credential Scoping
+
+Vault access at L5 is further scoped. An L5 agent does not get access to all credentials in your vault. It gets access only to the credentials explicitly granted to it in the agent config:
+
+```json
+{
+  "vault_grants": ["github_token", "linear_api_key"]
+}
+```
+
+Credentials are decrypted in memory, used for the tool call, and never written to logs or memory. The audit log records which credential was used and when, but not its value.

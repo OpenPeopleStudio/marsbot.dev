@@ -1,0 +1,176 @@
+---
+title: "Open People Standard"
+description: "A portable identity format for human-owned AI agents."
+order: 3
+---
+
+# Open People Standard
+
+Open People is a data identity standard for AI-native applications. It defines a portable, human-owned format for representing a person's identity, memory, preferences, and agency — designed to travel with them across platforms and agents.
+
+## The Problem
+
+When you use an AI assistant today, your context lives inside that product. Your conversation history, the things the model learned about you, your preferences — all of it is locked in a proprietary system. If you switch products, you start over. If the product shuts down, you lose everything. If you want two AI systems to share context about you, there is no standard way to do it.
+
+The same problem exists for agents. If you configure an agent with knowledge about who you are, what you care about, and how you work, that configuration is specific to one system. A different agent that serves you a week later knows nothing.
+
+Open People addresses this by defining a portable identity format that is owned by the person, not the platform.
+
+## What Open People Is
+
+Open People is a JSON-based specification for a **People Document** — a structured representation of a person that any AI system can read and write.
+
+A People Document contains:
+
+- **Identity graph**: a set of verifiable claims about who you are (name, handles, public keys)
+- **Memory store**: structured facts the person has chosen to record about themselves
+- **Preference map**: how the person wants AI systems to behave when acting on their behalf
+- **Agency grants**: which agents are authorized to act on the person's behalf, and with what scope
+- **Event log**: a tamper-evident history of agent actions taken in the person's name
+
+This document lives wherever the person stores it — a self-hosted server, a cloud storage bucket, a local file. The platform reads it with permission; it does not own it.
+
+## Why It Exists
+
+### Portability
+
+Your AI context should move with you. If you switch from one agent platform to another, your People Document moves with you. The new platform reads your preferences, memories, and agency grants — and continues where the last one left off.
+
+### Human Ownership
+
+The People Document is signed by a key you control. Platforms can read it and propose updates, but they cannot unilaterally modify it. Every update is a proposal that requires your signature to be valid. You always have the authoritative copy.
+
+### Interoperability
+
+When two AI systems share the same identity standard, they can coordinate around a person without either system owning the relationship. A calendar agent and a research agent can share relevant context from your People Document without direct API integration between them.
+
+### Auditability
+
+The event log in a People Document is append-only and content-addressed. You can see exactly what every agent did on your behalf, when, and with what inputs. This is not a nicety — it is a requirement for trusting agents with real-world actions.
+
+## Key Concepts
+
+### Identity Graph
+
+The identity graph is a set of claims about who you are. Each claim has a type, a value, and an optional proof.
+
+```json
+{
+  "identity": {
+    "display_name": "Mars",
+    "handles": {
+      "github": "mars",
+      "email": "mars@example.com"
+    },
+    "public_key": "ed25519:abc123...",
+    "claims": [
+      {
+        "type": "github_verified",
+        "value": "mars",
+        "proof": "https://gist.github.com/mars/..."
+      }
+    ]
+  }
+}
+```
+
+Claims are optional. A People Document can be as minimal as a name and a key, or as rich as a full verified identity graph. The standard does not require any specific claims — it defines how to express them when you choose to include them.
+
+### Memory
+
+The memory store is a set of structured facts about you, organized by domain. Each memory entry has a key, a value, a source (who wrote it), and a timestamp.
+
+```json
+{
+  "memory": {
+    "preferences": {
+      "communication_style": "direct, no filler",
+      "code_language": "TypeScript",
+      "timezone": "America/Los_Angeles"
+    },
+    "context": {
+      "current_projects": ["marsbot", "open-people"],
+      "tools_i_use": ["neovim", "wezterm", "raycast"]
+    },
+    "professional": {
+      "role": "builder",
+      "domain": "developer tools, AI systems"
+    }
+  }
+}
+```
+
+An AI system that reads this memory can immediately calibrate to how you work without you having to explain yourself. Memory entries are versioned — you can see how your recorded preferences have changed over time.
+
+### Agency Grants
+
+Agency grants define which agents are authorized to act on your behalf and what they can do. Each grant specifies an agent identity, a scope of allowed actions, and an expiry.
+
+```json
+{
+  "agency": {
+    "grants": [
+      {
+        "agent_id": "marsbot:research-assistant",
+        "scope": ["web_fetch", "read_memory", "write_memory"],
+        "trust_level": 3,
+        "expires_at": "2026-12-31T00:00:00Z"
+      },
+      {
+        "agent_id": "marsbot:code-helper",
+        "scope": ["read_file", "write_file", "run_code"],
+        "trust_level": 4,
+        "allowed_dirs": ["/home/mars/projects"]
+      }
+    ]
+  }
+}
+```
+
+When a marsbot agent checks whether it is allowed to perform an action, it checks the People Document's agency grants. This makes authorization declarative and portable — the grant lives with you, not with the platform.
+
+### Event Log
+
+The event log records what agents did on your behalf. Each entry includes the agent identity, the action taken, the inputs, and the outcome.
+
+```json
+{
+  "events": [
+    {
+      "id": "evt_01HXYZ...",
+      "timestamp": "2026-02-18T14:23:01Z",
+      "agent": "marsbot:research-assistant",
+      "action": "web_fetch",
+      "input": { "url": "https://example.com/paper.pdf" },
+      "outcome": "success",
+      "hash": "sha256:abc..."
+    }
+  ]
+}
+```
+
+Each event is content-addressed — its hash covers all fields including the previous event's hash, forming a chain. You can verify the log has not been tampered with by checking the chain.
+
+## Open People in marsbot
+
+marsbot uses Open People as its native identity format. Every user has a People Document. Agent configurations reference it for memory and agency. The vault is linked to it for credential grants. The event log from the trust model feeds into it.
+
+You can export your People Document at any time:
+
+```bash
+marsbot identity export --output my-identity.json
+```
+
+And import it into a fresh marsbot installation:
+
+```bash
+marsbot identity import --file my-identity.json
+```
+
+## The Standard
+
+Open People is an open specification. The full schema, reference implementation, and validation tools are available. Any platform can implement it. No permission needed, no license fee.
+
+The goal is not to own the standard. The goal is to establish a common format so that the agent ecosystem can interoperate around human identity the same way the web interoperates around HTML.
+
+If you are building an AI product and want to give your users portable, human-owned identity, Open People is designed for you to adopt without modification.
