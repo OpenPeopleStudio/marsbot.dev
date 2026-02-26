@@ -1,8 +1,8 @@
 ---
-// Hero section — static tagline + slot for interactive demo island
+// Hero section — product statement + slot for interactive demo island
 ---
 
-<section class="relative pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-6">
+<section id="hero" class="relative pt-28 sm:pt-36 pb-8 sm:pb-12 px-4 sm:px-6">
   <!-- Spatial void background -->
   <div class="absolute inset-0 bg-grid opacity-60 pointer-events-none"></div>
   <div class="absolute top-[-150px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[var(--mars-orange)] opacity-[0.05] blur-[120px] rounded-full pointer-events-none"></div>
@@ -14,20 +14,22 @@
       beta &mdash; building in public
     </div>
 
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-mono font-bold text-[var(--mars-orange)] mb-6 animate-slide-up tracking-tight">
-      marsbot
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-mono font-bold tracking-tight mb-6 animate-slide-up hero-gradient-text">
+      Your personal OS<br />for AI agents
     </h1>
 
-    <p class="text-lg sm:text-xl font-mono font-medium text-[var(--text-secondary)] max-w-xl mx-auto mb-4 leading-relaxed animate-slide-up delay-100">
-      Run your own intelligence.
+    <p class="text-base sm:text-lg font-mono font-medium text-[var(--text-secondary)] max-w-xl mx-auto mb-4 leading-relaxed animate-slide-up delay-100">
+      One gateway on your hardware. Every surface connected. Agents that earn trust.
     </p>
-    <p class="text-sm text-[var(--text-muted)] max-w-lg mx-auto mb-10 leading-relaxed animate-slide-up delay-200">
-      Agents you own. Servers you control. Intelligence that answers to you.
-    </p>
+
+    <div class="flex items-center justify-center gap-3 mt-8 mb-2 animate-slide-up delay-200">
+      <a href="/docs/getting-started" class="btn-primary text-sm">Get Started</a>
+      <a href="/docs/architecture" class="btn-secondary text-sm">View Architecture</a>
+    </div>
   </div>
 
   <!-- Interactive demo island slot -->
-  <div class="relative mt-14 sm:mt-20">
+  <div class="relative mt-12 sm:mt-16">
     <slot />
   </div>
 </section>

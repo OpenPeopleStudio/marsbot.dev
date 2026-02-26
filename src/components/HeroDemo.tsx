@@ -26,8 +26,8 @@ import BreathingLine from "./BreathingLine";
 interface SurfaceNode {
   id: string;
   label: string;
+  subtitle: string;
   icon: ReactNode;
-  /** Orbital position as angle in degrees (0 = top) */
   angle: number;
   capabilities: string[];
 }
@@ -45,8 +45,9 @@ const SURFACES: SurfaceNode[] = [
   {
     id: "mars-mac",
     label: "Desktop",
+    subtitle: "Native macOS · SwiftUI",
     icon: <Monitor size={20} strokeWidth={1.5} />,
-    angle: 315, // top-left
+    angle: 315,
     capabilities: [
       "Native SwiftUI",
       "Sentry Mode",
@@ -57,8 +58,9 @@ const SURFACES: SurfaceNode[] = [
   {
     id: "mars-mobile",
     label: "Mobile",
+    subtitle: "Native iOS · 99 tools",
     icon: <Smartphone size={20} strokeWidth={1.5} />,
-    angle: 45, // top-right
+    angle: 45,
     capabilities: [
       "Native iOS",
       "99 MCP tools",
@@ -67,10 +69,11 @@ const SURFACES: SurfaceNode[] = [
     ],
   },
   {
-    id: "marsbot-dev",
+    id: "marsbot-web",
     label: "Web",
+    subtitle: "Dashboard · Real-time",
     icon: <Globe size={20} strokeWidth={1.5} />,
-    angle: 225, // bottom-left
+    angle: 225,
     capabilities: [
       "Web app",
       "Spatial UI",
@@ -81,8 +84,9 @@ const SURFACES: SurfaceNode[] = [
   {
     id: "cli-tui",
     label: "CLI",
+    subtitle: "Terminal UI · Ink",
     icon: <Terminal size={20} strokeWidth={1.5} />,
-    angle: 135, // bottom-right
+    angle: 135,
     capabilities: [
       "Terminal UI",
       "Ink renderer",
@@ -101,15 +105,49 @@ const GATEWAY_CAPABILITIES = [
 ];
 
 const TRUST_LEVELS = [
-  { level: "L1", color: "#505b6b", label: "Stranger" },
-  { level: "L2", color: "#5b8abf", label: "Known" },
-  { level: "L3", color: "#d4a033", label: "Trusted" },
-  { level: "L4", color: "#d47833", label: "Inner" },
-  { level: "L5", color: "#d45c5c", label: "Core" },
+  { level: "L1", color: "#505b6b", label: "Sandboxed" },
+  { level: "L2", color: "#5b8abf", label: "Reader" },
+  { level: "L3", color: "#d4a033", label: "Writer" },
+  { level: "L4", color: "#d47833", label: "Executor" },
+  { level: "L5", color: "#d45c5c", label: "Trusted" },
 ];
 
 const MARS_ORANGE = "#e8622a";
 const MARS_ORANGE_DIM = "rgba(232, 98, 42, 0.4)";
+
+/* ────────────────────────────────────────────
+   Phase system
+   ──────────────────────────────────────────── */
+
+const enum Phase {
+  Gateway = 0,
+  Surfaces = 1,
+  DataFlow = 2,
+  TrustLadder = 3,
+  YourStack = 4,
+}
+
+const PHASE_DURATIONS = [2000, 3500, 4000, 5000, 5500]; // ms
+const TOTAL_CYCLE = PHASE_DURATIONS.reduce((a, b) => a + b, 0);
+
+// Cumulative start times for each phase
+const PHASE_STARTS = PHASE_DURATIONS.reduce<number[]>((acc, dur, i) => {
+  acc.push(i === 0 ? 0 : acc[i - 1] + PHASE_DURATIONS[i - 1]);
+  return acc;
+}, []);
+
+interface PhaseCaption {
+  title: string;
+  subtitle: string;
+}
+
+const PHASE_CAPTIONS: PhaseCaption[] = [
+  { title: "Your Gateway", subtitle: "runs on your hardware" },
+  { title: "Every Surface", subtitle: "one agent, every device" },
+  { title: "Live Data Flow", subtitle: "real-time across all surfaces" },
+  { title: "Trust Ladder", subtitle: "agents earn access through competence" },
+  { title: "Your Stack", subtitle: "22 packages · 95 tools · fully open" },
+];
 
 /* ────────────────────────────────────────────
    Geometry helpers
@@ -126,14 +164,13 @@ function getOrbitalPosition(
   cx: number,
   cy: number
 ): NodePosition {
-  const rad = degToRad(angle - 90); // offset so 0 = top
+  const rad = degToRad(angle - 90);
   return {
     x: cx + radiusX * Math.cos(rad),
     y: cy + radiusY * Math.sin(rad),
   };
 }
 
-/** SVG arc path for a segment of a circle */
 function arcPath(
   cx: number,
   cy: number,
@@ -150,21 +187,6 @@ function arcPath(
   const largeArc = endAngle - startAngle > 180 ? 1 : 0;
   return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
 }
-
-/* ────────────────────────────────────────────
-   Auto-play phase enum
-   ──────────────────────────────────────────── */
-
-const enum Phase {
-  GatewayIn = 0,
-  SurfacesIn = 1,
-  LinesIn = 2,
-  ParticleFlow = 3,
-  TrustRing = 4,
-}
-
-const PHASE_DURATIONS = [500, 1500, 800, 12000, 3000]; // ms per phase
-const TOTAL_CYCLE = PHASE_DURATIONS.reduce((a, b) => a + b, 0);
 
 /* ────────────────────────────────────────────
    Sub-components
@@ -184,6 +206,70 @@ function TUIHeader() {
           live
         </span>
       </div>
+    </div>
+  );
+}
+
+/** Phase caption with crossfade */
+function PhaseCaptionDisplay({ phase }: { phase: Phase }) {
+  const caption = PHASE_CAPTIONS[phase];
+  return (
+    <div className="text-center h-14 flex flex-col items-center justify-center">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={phase}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.4 }}
+          className="flex flex-col items-center"
+        >
+          <span className="text-sm sm:text-base font-mono font-bold text-[var(--mars-orange)]">
+            {caption.title}
+          </span>
+          <span className="text-xs sm:text-sm font-mono text-[var(--text-secondary)] mt-0.5">
+            {caption.subtitle}
+          </span>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/** Phase indicator dots — clickable to jump */
+function PhaseDots({
+  currentPhase,
+  onJump,
+}: {
+  currentPhase: Phase;
+  onJump: (phase: Phase) => void;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-2 py-2">
+      {PHASE_CAPTIONS.map((cap, i) => (
+        <button
+          key={i}
+          onClick={(e) => {
+            e.stopPropagation();
+            onJump(i as Phase);
+          }}
+          className="group flex items-center gap-1.5 cursor-pointer"
+          aria-label={`Jump to phase: ${cap.title}`}
+          title={cap.title}
+        >
+          <span
+            className="w-2 h-2 rounded-full transition-all duration-300"
+            style={{
+              background:
+                i === currentPhase
+                  ? MARS_ORANGE
+                  : "var(--text-muted)",
+              opacity: i === currentPhase ? 1 : 0.35,
+              transform: i === currentPhase ? "scale(1.3)" : "scale(1)",
+            }}
+          />
+        </button>
+      ))}
     </div>
   );
 }
@@ -208,7 +294,6 @@ function CapabilityPanel({
         onClose();
       }
     }
-    // Delay listener so the opening click doesn't immediately close
     const timer = setTimeout(() => {
       document.addEventListener("mousedown", handleClick);
     }, 10);
@@ -281,12 +366,11 @@ function useParticleCanvas(
     if (!ctx) return;
     ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
 
-    // Seed particles
     const particles: { t: number; src: number; speed: number; offset: number }[] = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       particles.push({
         t: Math.random(),
-        src: activeSourceIdx,
+        src: i % surfacePositions.length,
         speed: 0.3 + Math.random() * 0.4,
         offset: (Math.random() - 0.5) * 4,
       });
@@ -317,7 +401,6 @@ function useParticleCanvas(
 
         const x = src.x + (center.x - src.x) * p.t + p.offset;
         const y = src.y + (center.y - src.y) * p.t + p.offset;
-        // Fade in/out near endpoints
         const alpha = Math.sin(p.t * Math.PI) * 0.9;
 
         ctx.beginPath();
@@ -325,7 +408,6 @@ function useParticleCanvas(
         ctx.fillStyle = `rgba(232, 98, 42, ${alpha})`;
         ctx.fill();
 
-        // Glow
         ctx.beginPath();
         ctx.arc(x, y, 5, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(232, 98, 42, ${alpha * 0.25})`;
@@ -351,6 +433,36 @@ function useParticleCanvas(
 }
 
 /* ────────────────────────────────────────────
+   Reduced motion fallback
+   ──────────────────────────────────────────── */
+
+function ReducedMotionView() {
+  return (
+    <div className="glass-card rounded-2xl border border-[var(--border-medium)] overflow-hidden max-w-3xl mx-auto">
+      <TUIHeader />
+      <div className="p-6 space-y-4">
+        {PHASE_CAPTIONS.map((cap, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <span
+              className="w-2 h-2 mt-1.5 rounded-full shrink-0"
+              style={{ background: MARS_ORANGE }}
+            />
+            <div>
+              <span className="text-sm font-mono font-bold text-[var(--mars-orange)]">
+                {cap.title}
+              </span>
+              <span className="text-sm font-mono text-[var(--text-secondary)] ml-2">
+                — {cap.subtitle}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────
    Main component
    ──────────────────────────────────────────── */
 
@@ -361,13 +473,14 @@ export default function HeroDemo() {
   const [isVisible, setIsVisible] = useState(false);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [phase, setPhase] = useState<Phase>(Phase.GatewayIn);
+  const [phase, setPhase] = useState<Phase>(Phase.Gateway);
   const [cycleTime, setCycleTime] = useState(0);
   const [activeSurfaceIdx, setActiveSurfaceIdx] = useState(0);
   const [activeTrustLevel, setActiveTrustLevel] = useState(-1);
   const phaseTimerRef = useRef(0);
+  const elapsedRef = useRef(0);
 
-  // Intersection observer — pause when off-screen
+  // Intersection observer
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -391,7 +504,7 @@ export default function HeroDemo() {
     return () => ro.disconnect();
   }, []);
 
-  // Computed layout
+  // Layout
   const isMobile = containerSize.width < 500;
   const svgH = isMobile ? 320 : 400;
   const cx = containerSize.width / 2;
@@ -411,57 +524,58 @@ export default function HeroDemo() {
 
   const center = useMemo(() => ({ x: cx, y: cy }), [cx, cy]);
 
+  // Jump to phase handler
+  const jumpToPhase = useCallback((targetPhase: Phase) => {
+    elapsedRef.current = PHASE_STARTS[targetPhase];
+  }, []);
+
   // Auto-play cycle
   useEffect(() => {
     if (!isVisible || prefersReduced) return;
 
-    let elapsed = 0;
     let lastTs = performance.now();
 
     function tick(ts: number) {
       const dt = Math.min(ts - lastTs, 100);
       lastTs = ts;
-      elapsed += dt;
+      elapsedRef.current += dt;
 
-      // Compute which phase we're in
-      let acc = 0;
-      let currentPhase = Phase.GatewayIn;
-      for (let i = 0; i < PHASE_DURATIONS.length; i++) {
-        acc += PHASE_DURATIONS[i];
-        if (elapsed < acc) {
+      // Loop
+      if (elapsedRef.current >= TOTAL_CYCLE) {
+        elapsedRef.current = elapsedRef.current % TOTAL_CYCLE;
+      }
+
+      const elapsed = elapsedRef.current;
+
+      // Compute current phase
+      let currentPhase = Phase.Gateway;
+      for (let i = PHASE_DURATIONS.length - 1; i >= 0; i--) {
+        if (elapsed >= PHASE_STARTS[i]) {
           currentPhase = i as Phase;
           break;
-        }
-        if (i === PHASE_DURATIONS.length - 1) {
-          // Loop
-          elapsed = elapsed % TOTAL_CYCLE;
-          currentPhase = Phase.GatewayIn;
         }
       }
 
       setPhase(currentPhase);
       setCycleTime(elapsed / TOTAL_CYCLE);
 
-      // Particle source cycling during ParticleFlow phase
-      if (currentPhase === Phase.ParticleFlow) {
-        const flowStart =
-          PHASE_DURATIONS[0] + PHASE_DURATIONS[1] + PHASE_DURATIONS[2];
-        const flowElapsed = elapsed - flowStart;
-        const idx = Math.floor(flowElapsed / 3000) % SURFACES.length;
+      // Particle source cycling during DataFlow phase
+      if (currentPhase === Phase.DataFlow) {
+        const flowElapsed = elapsed - PHASE_STARTS[Phase.DataFlow];
+        const idx = Math.floor(flowElapsed / 1000) % SURFACES.length;
         setActiveSurfaceIdx(idx);
       }
 
-      // Trust ring illumination
-      if (currentPhase === Phase.TrustRing) {
-        const trustStart = TOTAL_CYCLE - PHASE_DURATIONS[4];
-        const trustElapsed = elapsed - trustStart;
+      // Trust ring illumination during TrustLadder phase
+      if (currentPhase === Phase.TrustLadder) {
+        const trustElapsed = elapsed - PHASE_STARTS[Phase.TrustLadder];
         const lvl = Math.min(
-          Math.floor((trustElapsed / PHASE_DURATIONS[4]) * 5),
+          Math.floor((trustElapsed / PHASE_DURATIONS[Phase.TrustLadder]) * 5),
           4
         );
         setActiveTrustLevel(lvl);
-      } else if (currentPhase >= Phase.ParticleFlow) {
-        // Keep all trust levels lit after trust ring phase until reset
+      } else if (currentPhase === Phase.YourStack) {
+        setActiveTrustLevel(4); // Keep all lit
       } else {
         setActiveTrustLevel(-1);
       }
@@ -473,23 +587,20 @@ export default function HeroDemo() {
     return () => cancelAnimationFrame(phaseTimerRef.current);
   }, [isVisible, prefersReduced]);
 
-  // Particle canvas
+  // Particles
   useParticleCanvas(
     canvasRef,
     surfacePositions,
     center,
     activeSurfaceIdx,
-    isVisible && phase >= Phase.ParticleFlow,
+    isVisible && phase >= Phase.DataFlow,
     { width: containerSize.width, height: svgH }
   );
 
   // Click handlers
-  const handleNodeClick = useCallback(
-    (nodeId: string) => {
-      setSelectedNode((prev) => (prev === nodeId ? null : nodeId));
-    },
-    []
-  );
+  const handleNodeClick = useCallback((nodeId: string) => {
+    setSelectedNode((prev) => (prev === nodeId ? null : nodeId));
+  }, []);
 
   const getCapabilityPanelData = useCallback((): {
     items: string[];
@@ -515,28 +626,29 @@ export default function HeroDemo() {
 
   const panelData = getCapabilityPanelData();
 
-  // Reduced motion: skip to fully visible
-  const showGateway = prefersReduced || phase >= Phase.GatewayIn;
-  const showSurfaces = prefersReduced || phase >= Phase.SurfacesIn;
-  const showLines = prefersReduced || phase >= Phase.LinesIn;
+  // Phase visibility flags
+  const showGateway = phase >= Phase.Gateway;
+  const showSurfaces = phase >= Phase.Surfaces;
+  const showLines = phase >= Phase.Surfaces;
+
+  if (prefersReduced) {
+    return <ReducedMotionView />;
+  }
 
   return (
     <div
       ref={containerRef}
       className="glass-card rounded-2xl border border-[var(--border-medium)] overflow-hidden max-w-3xl mx-auto"
     >
-      {/* TUI header */}
       <TUIHeader />
-
-      {/* Top breathing line */}
       <BreathingLine />
 
+      {/* Phase caption */}
+      <PhaseCaptionDisplay phase={phase} />
+
       {/* Main visualization area */}
-      <div
-        className="relative select-none"
-        style={{ height: svgH }}
-      >
-        {/* SVG layer — lines, trust ring, gateway circle */}
+      <div className="relative select-none" style={{ height: svgH }}>
+        {/* SVG layer */}
         <svg
           className="absolute inset-0 w-full"
           style={{ height: svgH }}
@@ -544,7 +656,6 @@ export default function HeroDemo() {
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
-            {/* Glow filter for gateway */}
             <filter id="gatewayGlow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur" />
               <feFlood floodColor={MARS_ORANGE} floodOpacity="0.35" result="color" />
@@ -600,9 +711,39 @@ export default function HeroDemo() {
                   strokeWidth={2.5}
                   strokeLinecap="round"
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: lit ? 0.9 : 0.15 }}
+                  animate={{ opacity: lit ? 0.9 : 0.12 }}
                   transition={{ duration: 0.4 }}
                 />
+              );
+            })}
+
+          {/* Trust level labels (visible during TrustLadder phase) */}
+          {phase >= Phase.TrustLadder &&
+            TRUST_LEVELS.map((tl, i) => {
+              const segAngle = 360 / TRUST_LEVELS.length;
+              const midAngle = i * segAngle + segAngle / 2;
+              const labelR = trustRingR + 14;
+              const rad = degToRad(midAngle - 90);
+              const lx = cx + labelR * Math.cos(rad);
+              const ly = cy + labelR * Math.sin(rad);
+              const lit = activeTrustLevel >= i;
+              return (
+                <motion.text
+                  key={`trust-label-${i}`}
+                  x={lx}
+                  y={ly}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill={tl.color}
+                  fontSize={9}
+                  fontFamily="var(--font-mono)"
+                  fontWeight="bold"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: lit ? 0.85 : 0 }}
+                  transition={{ duration: 0.3, delay: i * 0.1 }}
+                >
+                  {tl.level}
+                </motion.text>
               );
             })}
 
@@ -631,7 +772,7 @@ export default function HeroDemo() {
           style={{ width: containerSize.width, height: svgH }}
         />
 
-        {/* HTML overlay — node labels + icons */}
+        {/* HTML overlay — nodes */}
         <div className="absolute inset-0 pointer-events-none" style={{ height: svgH }}>
           {/* Gateway label */}
           {showGateway && (
@@ -649,7 +790,6 @@ export default function HeroDemo() {
               title="JSON-RPC daemon"
               aria-label="Gateway node — click for details"
             >
-              {/* Pulse ring */}
               <motion.div
                 className="absolute rounded-full border border-[var(--mars-orange)]"
                 style={{
@@ -680,11 +820,11 @@ export default function HeroDemo() {
             SURFACES.map((surface, i) => {
               const pos = surfacePositions[i];
               if (!pos) return null;
-              const isActive = activeSurfaceIdx === i && phase >= Phase.ParticleFlow;
+              const isActive = activeSurfaceIdx === i && phase >= Phase.DataFlow;
               return (
                 <motion.button
                   key={surface.id}
-                  className="absolute pointer-events-auto flex flex-col items-center gap-1.5 cursor-pointer group"
+                  className="absolute pointer-events-auto flex flex-col items-center gap-1 cursor-pointer group"
                   style={{
                     left: pos.x,
                     top: pos.y,
@@ -737,6 +877,17 @@ export default function HeroDemo() {
                   >
                     {surface.label}
                   </span>
+                  <span
+                    className="text-[8px] font-mono transition-colors hidden sm:block"
+                    style={{
+                      color: isActive
+                        ? "var(--text-secondary)"
+                        : "var(--text-muted)",
+                      opacity: isActive ? 1 : 0.6,
+                    }}
+                  >
+                    {surface.subtitle}
+                  </span>
                 </motion.button>
               );
             })}
@@ -753,13 +904,51 @@ export default function HeroDemo() {
               />
             )}
           </AnimatePresence>
+
+          {/* YourStack phase overlay */}
+          <AnimatePresence>
+            {phase === Phase.YourStack && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              >
+                <div className="flex gap-6 sm:gap-10">
+                  {[
+                    { value: "22", label: "packages" },
+                    { value: "95", label: "tools" },
+                    { value: "6", label: "providers" },
+                    { value: "5", label: "surfaces" },
+                  ].map((stat, i) => (
+                    <motion.div
+                      key={stat.label}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="text-center"
+                    >
+                      <div className="text-2xl sm:text-3xl font-mono font-bold text-[var(--mars-orange)]">
+                        {stat.value}
+                      </div>
+                      <div className="text-[10px] sm:text-xs font-mono text-[var(--text-muted)] mt-1">
+                        {stat.label}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* Bottom breathing line */}
       <BreathingLine />
 
-      {/* Progress bar */}
+      {/* Phase dots + progress bar */}
+      <PhaseDots currentPhase={phase} onJump={jumpToPhase} />
+
       <div className="h-[2px] bg-[var(--surface-2)]">
         <motion.div
           className="h-full"
