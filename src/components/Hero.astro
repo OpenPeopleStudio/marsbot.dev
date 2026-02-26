@@ -1,0 +1,33 @@
+---
+// Hero section — static tagline + slot for interactive demo island
+---
+
+<section class="relative pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-6">
+  <!-- Spatial void background -->
+  <div class="absolute inset-0 bg-grid opacity-60 pointer-events-none"></div>
+  <div class="absolute top-[-150px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[var(--mars-orange)] opacity-[0.05] blur-[120px] rounded-full pointer-events-none"></div>
+  <div class="absolute top-[100px] left-1/4 w-[300px] h-[300px] bg-[var(--mars-orange)] opacity-[0.02] blur-[100px] rounded-full pointer-events-none"></div>
+
+  <div class="relative max-w-3xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[var(--surface-2)] border border-[var(--border-subtle)] text-xs font-mono text-[var(--text-muted)] mb-8 animate-fade-in">
+      <span class="w-1.5 h-1.5 rounded-full bg-[var(--mars-orange)]"></span>
+      beta &mdash; building in public
+    </div>
+
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-mono font-bold text-[var(--mars-orange)] mb-6 animate-slide-up tracking-tight">
+      marsbot
+    </h1>
+
+    <p class="text-lg sm:text-xl font-mono font-medium text-[var(--text-secondary)] max-w-xl mx-auto mb-4 leading-relaxed animate-slide-up delay-100">
+      Run your own intelligence.
+    </p>
+    <p class="text-sm text-[var(--text-muted)] max-w-lg mx-auto mb-10 leading-relaxed animate-slide-up delay-200">
+      Agents you own. Servers you control. Intelligence that answers to you.
+    </p>
+  </div>
+
+  <!-- Interactive demo island slot -->
+  <div class="relative mt-14 sm:mt-20">
+    <slot />
+  </div>
+</section>

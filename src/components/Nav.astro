@@ -1,0 +1,25 @@
+---
+// Fixed top nav — monospace, void aesthetic
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--void)]/90 backdrop-blur-xl">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+    <a href="/" class="text-sm font-mono font-bold text-[var(--mars-orange)] tracking-wide hover:opacity-80 transition-opacity">
+      MARSBOT
+    </a>
+    <div class="hidden md:flex items-center gap-7 text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">
+      <a href="#mission" class="hover:text-[var(--text-primary)] transition-colors">Mission</a>
+      <a href="#features" class="hover:text-[var(--text-primary)] transition-colors">Features</a>
+      <a href="#platforms" class="hover:text-[var(--text-primary)] transition-colors">Platforms</a>
+      <a href="#trust" class="hover:text-[var(--text-primary)] transition-colors">Trust</a>
+      <a href="#changelog" class="hover:text-[var(--text-primary)] transition-colors">Log</a>
+      <a href="/ecosystem" class="hover:text-[var(--text-primary)] transition-colors">Ecosystem</a>
+      <a href="/docs/architecture" class="hover:text-[var(--text-primary)] transition-colors">Docs</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="https://github.com/open-people-studio" class="text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors hidden sm:block">
+        github
+      </a>
+    </div>
+  </div>
+</nav>
