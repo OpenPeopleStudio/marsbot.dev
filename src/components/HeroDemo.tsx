@@ -47,7 +47,7 @@ const SURFACES: SurfaceNode[] = [
     label: "Desktop",
     subtitle: "Native macOS · SwiftUI",
     icon: <Monitor size={20} strokeWidth={1.5} />,
-    angle: 315,
+    angle: 0,
     capabilities: [
       "Native SwiftUI",
       "Sentry Mode",
@@ -60,7 +60,7 @@ const SURFACES: SurfaceNode[] = [
     label: "Mobile",
     subtitle: "Native iOS · 99 tools",
     icon: <Smartphone size={20} strokeWidth={1.5} />,
-    angle: 45,
+    angle: 90,
     capabilities: [
       "Native iOS",
       "99 MCP tools",
@@ -73,7 +73,7 @@ const SURFACES: SurfaceNode[] = [
     label: "Web",
     subtitle: "Dashboard · Real-time",
     icon: <Globe size={20} strokeWidth={1.5} />,
-    angle: 225,
+    angle: 270,
     capabilities: [
       "Web app",
       "Spatial UI",
@@ -86,7 +86,7 @@ const SURFACES: SurfaceNode[] = [
     label: "CLI",
     subtitle: "Terminal UI · Ink",
     icon: <Terminal size={20} strokeWidth={1.5} />,
-    angle: 135,
+    angle: 180,
     capabilities: [
       "Terminal UI",
       "Ink renderer",
@@ -127,7 +127,7 @@ const enum Phase {
   YourStack = 4,
 }
 
-const PHASE_DURATIONS = [2000, 3500, 4000, 5000, 5500]; // ms
+const PHASE_DURATIONS = [2500, 4000, 5000, 5500, 5000]; // ms
 const TOTAL_CYCLE = PHASE_DURATIONS.reduce((a, b) => a + b, 0);
 
 // Cumulative start times for each phase
@@ -474,7 +474,6 @@ export default function HeroDemo() {
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>(Phase.Gateway);
-  const [cycleTime, setCycleTime] = useState(0);
   const [activeSurfaceIdx, setActiveSurfaceIdx] = useState(0);
   const [activeTrustLevel, setActiveTrustLevel] = useState(-1);
   const phaseTimerRef = useRef(0);
@@ -509,8 +508,9 @@ export default function HeroDemo() {
   const svgH = isMobile ? 320 : 400;
   const cx = containerSize.width / 2;
   const cy = svgH / 2;
-  const orbRadiusX = isMobile ? containerSize.width * 0.32 : containerSize.width * 0.3;
-  const orbRadiusY = isMobile ? svgH * 0.32 : svgH * 0.33;
+  const orbRadius = isMobile ? Math.min(containerSize.width * 0.32, svgH * 0.35) : Math.min(containerSize.width * 0.28, svgH * 0.36);
+  const orbRadiusX = orbRadius;
+  const orbRadiusY = orbRadius;
   const gatewayR = isMobile ? 32 : 40;
   const trustRingR = gatewayR + 16;
 
@@ -529,7 +529,13 @@ export default function HeroDemo() {
     elapsedRef.current = PHASE_STARTS[targetPhase];
   }, []);
 
-  // Auto-play cycle
+  // Progress bar ref (avoids re-renders for smooth animation)
+  const progressRef = useRef<HTMLDivElement>(null);
+  const prevPhaseRef = useRef<Phase>(Phase.Gateway);
+  const prevSurfaceIdxRef = useRef(0);
+  const prevTrustRef = useRef(-1);
+
+  // Auto-play cycle — only triggers React re-renders on phase/state transitions
   useEffect(() => {
     if (!isVisible || prefersReduced) return;
 
@@ -547,6 +553,11 @@ export default function HeroDemo() {
 
       const elapsed = elapsedRef.current;
 
+      // Update progress bar directly via DOM (no re-render)
+      if (progressRef.current) {
+        progressRef.current.style.width = `${(elapsed / TOTAL_CYCLE) * 100}%`;
+      }
+
       // Compute current phase
       let currentPhase = Phase.Gateway;
       for (let i = PHASE_DURATIONS.length - 1; i >= 0; i--) {
@@ -556,28 +567,36 @@ export default function HeroDemo() {
         }
       }
 
-      setPhase(currentPhase);
-      setCycleTime(elapsed / TOTAL_CYCLE);
+      // Only update React state when values actually change
+      if (currentPhase !== prevPhaseRef.current) {
+        prevPhaseRef.current = currentPhase;
+        setPhase(currentPhase);
+      }
 
       // Particle source cycling during DataFlow phase
       if (currentPhase === Phase.DataFlow) {
         const flowElapsed = elapsed - PHASE_STARTS[Phase.DataFlow];
-        const idx = Math.floor(flowElapsed / 1000) % SURFACES.length;
-        setActiveSurfaceIdx(idx);
+        const idx = Math.floor(flowElapsed / 1250) % SURFACES.length;
+        if (idx !== prevSurfaceIdxRef.current) {
+          prevSurfaceIdxRef.current = idx;
+          setActiveSurfaceIdx(idx);
+        }
       }
 
       // Trust ring illumination during TrustLadder phase
+      let newTrust = -1;
       if (currentPhase === Phase.TrustLadder) {
         const trustElapsed = elapsed - PHASE_STARTS[Phase.TrustLadder];
-        const lvl = Math.min(
+        newTrust = Math.min(
           Math.floor((trustElapsed / PHASE_DURATIONS[Phase.TrustLadder]) * 5),
           4
         );
-        setActiveTrustLevel(lvl);
       } else if (currentPhase === Phase.YourStack) {
-        setActiveTrustLevel(4); // Keep all lit
-      } else {
-        setActiveTrustLevel(-1);
+        newTrust = 4;
+      }
+      if (newTrust !== prevTrustRef.current) {
+        prevTrustRef.current = newTrust;
+        setActiveTrustLevel(newTrust);
       }
 
       phaseTimerRef.current = requestAnimationFrame(tick);
@@ -950,11 +969,10 @@ export default function HeroDemo() {
       <PhaseDots currentPhase={phase} onJump={jumpToPhase} />
 
       <div className="h-[2px] bg-[var(--surface-2)]">
-        <motion.div
-          className="h-full"
-          style={{ background: MARS_ORANGE }}
-          animate={{ width: `${cycleTime * 100}%` }}
-          transition={{ duration: 0.1, ease: "linear" }}
+        <div
+          ref={progressRef}
+          className="h-full transition-none"
+          style={{ background: MARS_ORANGE, width: "0%" }}
         />
       </div>
     </div>
