@@ -1,0 +1,94 @@
+---
+import { getCollection } from "astro:content";
+
+const entries = (await getCollection("changelog")).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const TAG_STYLES: Record<string, { color: string; label: string }> = {
+  milestone: { color: "var(--mars-orange)", label: "Milestone" },
+  feature: { color: "var(--success)", label: "Feature" },
+  integration: { color: "#5b8abf", label: "Integration" },
+  infra: { color: "var(--text-muted)", label: "Infra" },
+};
+---
+
+<section id="changelog" class="py-16 sm:py-24 px-4 sm:px-6">
+  <div class="max-w-2xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="text-[10px] font-mono font-bold text-[var(--mars-orange)] uppercase tracking-[0.2em] mb-3 block">changelog</span>
+      <h2 class="text-xl sm:text-2xl font-mono font-bold text-[var(--text-primary)] mb-3">
+        Building in the open
+      </h2>
+      <p class="text-sm text-[var(--text-muted)] max-w-md mx-auto">
+        Every milestone, feature, and integration — documented as it ships.
+      </p>
+    </div>
+
+    <!-- Timeline -->
+    <div>
+      {entries.map((entry) => {
+        const style = TAG_STYLES[entry.data.tag] || TAG_STYLES.infra;
+        return (
+          <div class="relative pl-7 sm:pl-9 pb-8 last:pb-0 group">
+            {/* Timeline line */}
+            <div class="absolute left-[9px] sm:left-[13px] top-5 bottom-0 w-px bg-[var(--border-subtle)] group-last:hidden" />
+
+            {/* Timeline dot */}
+            <div
+              class="absolute left-0 sm:left-1 top-1 w-5 h-5 rounded-full flex items-center justify-center border bg-[var(--void)]"
+              style={`border-color: ${style.color}`}
+            >
+              <div
+                class="w-1.5 h-1.5 rounded-full"
+                style={`background: ${style.color}`}
+              />
+            </div>
+
+            {/* Card */}
+            <div class="bg-[var(--surface-1)] border border-[var(--border-subtle)] rounded-lg p-4 sm:p-5 hover:border-[var(--border-medium)] transition-colors">
+              <div class="flex flex-wrap items-center gap-2.5 mb-2">
+                <span class="text-[10px] text-[var(--text-muted)] font-mono">
+                  {entry.data.date}
+                </span>
+                {entry.data.version && (
+                  <span
+                    class="text-[10px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded"
+                    style={`color: ${style.color}; background: color-mix(in srgb, ${style.color} 10%, transparent)`}
+                  >
+                    {entry.data.version}
+                  </span>
+                )}
+                <span
+                  class="inline-flex items-center gap-1 text-[10px] font-mono font-medium uppercase tracking-wider"
+                  style={`color: ${style.color}`}
+                >
+                  {style.label}
+                </span>
+              </div>
+
+              <h3 class="text-sm font-medium text-[var(--text-primary)] mb-1">
+                {entry.data.title}
+              </h3>
+              <p class="text-xs text-[var(--text-muted)] mb-3 leading-relaxed">
+                {entry.data.description}
+              </p>
+
+              <ul class="space-y-1">
+                {entry.data.items.map((item) => (
+                  <li class="flex items-start gap-2 text-xs">
+                    <svg class="shrink-0 mt-0.5 w-3 h-3" viewBox="0 0 24 24" fill="none" stroke={style.color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    <span class="text-[var(--text-secondary)]">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
