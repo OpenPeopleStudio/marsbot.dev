@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import EcosystemMap from "../components/EcosystemMap.tsx";
+---
+
+<Base title="Ecosystem — marsbot" description="The Mars ecosystem: 7 projects building sovereign AI infrastructure.">
+  <Nav />
+  <main class="pt-20 pb-16 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <h1 class="text-3xl font-mono font-bold text-[var(--text-primary)] mb-3">Ecosystem</h1>
+        <p class="text-sm text-[var(--text-muted)] max-w-xl mx-auto">
+          Seven projects building sovereign AI infrastructure. One identity standard. Multiple native surfaces. All connected through one gateway.
+        </p>
+      </div>
+      <EcosystemMap client:load />
+    </div>
+  </main>
+  <Footer />
+</Base>
