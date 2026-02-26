@@ -7,6 +7,7 @@ import mdx from '@astrojs/mdx';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://marsbot.dev',
   integrations: [react(), mdx()],
 
   vite: {
