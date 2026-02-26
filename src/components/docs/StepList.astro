@@ -1,0 +1,20 @@
+---
+// StepList wraps its children (expected to be <li> elements or similar)
+// and renders them with numbered orange step indicators.
+// Usage in MDX: <StepList steps={["Clone the repo", "Install deps", "Start gateway"]} />
+interface Props {
+  steps: string[];
+}
+const { steps } = Astro.props;
+---
+
+<div class="step-list my-6 space-y-4">
+  {steps.map((step, i) => (
+    <div class="flex items-start gap-3">
+      <span class="shrink-0 w-6 h-6 rounded-full bg-[var(--mars-orange)] text-[var(--text-inverse)] text-xs font-mono font-bold flex items-center justify-center mt-0.5">
+        {i + 1}
+      </span>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed pt-0.5">{step}</p>
+    </div>
+  ))}
+</div>

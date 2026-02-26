@@ -4,6 +4,9 @@ description: "Set up marsbot locally and create your first agent."
 order: 4
 ---
 
+import Callout from '../../components/docs/Callout.astro';
+import CodeTitle from '../../components/docs/CodeTitle.astro';
+
 # Getting Started
 
 This guide walks you through setting up marsbot on your own machine, connecting a language model provider, starting the gateway, and having your first conversation with an agent.
@@ -18,6 +21,10 @@ Before you start, make sure you have:
 - **A Supabase account** — marsbot uses Supabase for its database, Realtime coordination, and auth. The free tier is enough to get started.
 - **An LLM provider API key** — Anthropic, OpenAI, Gemini, Groq, or OpenRouter. Ollama works if you want fully local inference with no API key.
 - **Docker** (optional) — required for the execution sandbox at trust level L4+. Not needed for L1-L3 agents.
+
+<Callout type="info">
+  The Supabase free tier is enough to get started. You do not need a paid plan for personal marsbot use — the free tier covers the database, Realtime connections, and auth that marsbot requires.
+</Callout>
 
 ## 1. Clone and Install
 
@@ -76,6 +83,8 @@ This creates a config file at `~/.marsbot/config.json` and walks you through:
 4. Your display name (used in agent conversations)
 
 You can also write the config file directly:
+
+<CodeTitle filename="~/.marsbot/config.json" />
 
 ```json
 {
@@ -159,6 +168,8 @@ For local personal use, one worker is enough.
 ## 5. Create Your First Agent
 
 Agents are defined in YAML files. Create a file called `my-first-agent.yaml`:
+
+<CodeTitle filename="my-first-agent.yaml" />
 
 ```yaml
 name: my-assistant

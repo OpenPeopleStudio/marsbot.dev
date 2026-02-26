@@ -1,0 +1,44 @@
+---
+interface Props {
+  type?: "info" | "warning" | "tip";
+  title?: string;
+}
+
+const { type = "info", title } = Astro.props;
+
+const config = {
+  info: {
+    border: "var(--text-muted)",
+    bg: "color-mix(in srgb, #5b8abf 5%, var(--surface-1))",
+    icon: "ℹ",
+    defaultTitle: "Note",
+  },
+  warning: {
+    border: "var(--warning)",
+    bg: "color-mix(in srgb, var(--warning) 5%, var(--surface-1))",
+    icon: "⚠",
+    defaultTitle: "Warning",
+  },
+  tip: {
+    border: "var(--success)",
+    bg: "color-mix(in srgb, var(--success) 5%, var(--surface-1))",
+    icon: "✓",
+    defaultTitle: "Tip",
+  },
+};
+
+const c = config[type];
+const displayTitle = title || c.defaultTitle;
+---
+
+<div
+  class="callout rounded-lg my-5 px-4 py-3"
+  style={`border-left: 3px solid ${c.border}; background: ${c.bg};`}
+>
+  <p class="text-xs font-mono font-bold uppercase tracking-wider mb-1.5" style={`color: ${c.border};`}>
+    <span class="mr-1.5">{c.icon}</span>{displayTitle}
+  </p>
+  <div class="text-sm text-[var(--text-secondary)] leading-relaxed [&>p]:mb-0">
+    <slot />
+  </div>
+</div>

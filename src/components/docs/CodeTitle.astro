@@ -1,0 +1,12 @@
+---
+interface Props {
+  filename: string;
+}
+const { filename } = Astro.props;
+---
+
+<div class="code-title -mb-3 mt-5">
+  <span class="inline-block text-[10px] font-mono font-medium text-[var(--text-muted)] bg-[var(--surface-2)] border border-[var(--border-subtle)] border-b-0 rounded-t-md px-3 py-1.5">
+    {filename}
+  </span>
+</div>

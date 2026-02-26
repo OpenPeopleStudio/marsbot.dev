@@ -4,6 +4,9 @@ description: "How marsbot works: gateway daemon, worker pool, multi-surface, and
 order: 1
 ---
 
+import Callout from '../../components/docs/Callout.astro';
+import CodeTitle from '../../components/docs/CodeTitle.astro';
+
 # Architecture Overview
 
 marsbot is a personal AI agent platform built for people who want to own their agent infrastructure. Instead of delegating to a hosted black box, marsbot runs a gateway daemon on hardware you control — your laptop, a home server, a VPS — and connects every surface (terminal, web, mobile, Chrome) to that single gateway.
@@ -11,6 +14,10 @@ marsbot is a personal AI agent platform built for people who want to own their a
 ## Gateway Daemon
 
 The gateway is the heart of marsbot. It is a standalone Node.js process that speaks JSON-RPC 2.0 over both HTTP and WebSocket. Every client — whether it is the TUI, the web dashboard, the mobile app, or the CLI — connects to the gateway to send messages and receive responses.
+
+<Callout type="tip" title="Quick start">
+  The gateway starts with a single command: `marsbot gateway start`. See the [Getting Started](/docs/getting-started) guide.
+</Callout>
 
 ```
 ┌───────────────────────────────────────────────────────┐
@@ -120,6 +127,8 @@ marsbot uses Supabase as its data layer. Supabase provides:
 - **Storage**: file attachments, memory blobs, exported logs
 
 ### Core Schema
+
+<CodeTitle filename="~/.marsbot/config.json" />
 
 ```
 threads          — conversation containers, per-agent config

@@ -7,18 +7,38 @@ import { getCollection } from "astro:content";
 interface Props {
   title: string;
   description: string;
+  headings?: { depth: number; slug: string; text: string }[];
 }
 
-const { title, description } = Astro.props;
+const { title, description, headings = [] } = Astro.props;
 const docs = (await getCollection("docs")).sort((a, b) => a.data.order - b.data.order);
 const currentPath = Astro.url.pathname;
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
 <Base title={`${title} — marsbot docs`} description={description}>
   <Nav />
   <div class="pt-14 min-h-screen flex">
+    <!-- Mobile sidebar toggle -->
+    <input type="checkbox" id="docs-sidebar-toggle" class="hidden peer" />
+    <label
+      for="docs-sidebar-toggle"
+      class="lg:hidden fixed top-16 left-4 z-40 w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--surface-2)] border border-[var(--border-medium)] cursor-pointer"
+      aria-label="Toggle sidebar"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 4h12M2 8h12M2 12h12" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </label>
+
+    <!-- Sidebar backdrop (mobile) -->
+    <label
+      for="docs-sidebar-toggle"
+      class="hidden peer-checked:block fixed inset-0 z-30 bg-black/50 lg:!hidden"
+    ></label>
+
     <!-- Sidebar -->
-    <aside class="hidden lg:block w-64 shrink-0 border-r border-[var(--border-subtle)] p-6 pt-10 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
+    <aside class="fixed lg:sticky top-14 left-0 z-30 w-64 shrink-0 h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-[var(--border-subtle)] bg-[var(--void)] p-6 pt-10 -translate-x-full lg:translate-x-0 transition-transform peer-checked:translate-x-0">
       <h3 class="text-xs font-mono font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">Documentation</h3>
       <nav class="space-y-1">
         {docs.map((doc) => {
@@ -38,14 +58,35 @@ const currentPath = Astro.url.pathname;
         })}
       </nav>
     </aside>
+
     <!-- Content -->
-    <main class="flex-1 max-w-3xl px-6 sm:px-10 py-10">
+    <main class="flex-1 max-w-3xl px-6 sm:px-10 py-10 lg:ml-0">
       <h1 class="text-2xl font-mono font-bold text-[var(--text-primary)] mb-2">{title}</h1>
       <p class="text-sm text-[var(--text-muted)] mb-8">{description}</p>
-      <article class="prose prose-invert prose-sm max-w-none">
+      <article class="docs-prose">
         <slot />
       </article>
     </main>
+
+    <!-- Table of contents (xl screens) -->
+    {tocHeadings.length > 0 && (
+      <aside class="hidden xl:block w-48 shrink-0 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto py-10 pr-4">
+        <h4 class="text-[10px] font-mono font-bold text-[var(--text-muted)] uppercase tracking-widest mb-3">On this page</h4>
+        <nav class="space-y-1">
+          {tocHeadings.map((h) => (
+            <a
+              href={`#${h.slug}`}
+              class:list={[
+                "block text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors",
+                h.depth === 3 ? "pl-3" : ""
+              ]}
+            >
+              {h.text}
+            </a>
+          ))}
+        </nav>
+      </aside>
+    )}
   </div>
   <Footer />
 </Base>

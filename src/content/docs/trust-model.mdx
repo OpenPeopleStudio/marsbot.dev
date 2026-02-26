@@ -4,6 +4,9 @@ description: "How marsbot agents earn access through demonstrated competence."
 order: 2
 ---
 
+import Callout from '../../components/docs/Callout.astro';
+import CodeTitle from '../../components/docs/CodeTitle.astro';
+
 # Trust Model
 
 marsbot agents do not start with full access to your system. They earn it. The trust model is a five-level progression where each level unlocks a new tier of capabilities. An agent advances by using its current tools responsibly, staying within policy, and demonstrating the judgment needed for the next level.
@@ -15,6 +18,10 @@ This is not a permissions checkbox. It is a design principle: capability should 
 Most agent systems give every agent the same set of tools from the start. That is efficient when you trust the agent completely. For a personal platform running on your own hardware, with access to your files, credentials, and communications, it is the wrong default.
 
 The trust ladder lets you start safe and expand deliberately. A new agent you are experimenting with cannot read your files or run shell commands. An agent you have used for months and configured carefully can. The system enforces this — it is not just a guideline.
+
+<Callout type="info">
+  Trust levels are enforced at the gateway, not in the agent prompt. An agent cannot claim a higher trust level through instructions — the gateway reads the configured level from the database and gates every tool dispatch accordingly.
+</Callout>
 
 ## The Five Levels
 
@@ -99,6 +106,10 @@ L5 agents have access to the full tool set, including credential vault access, o
 **Use case:** fully autonomous agents, integration orchestrators, agents that manage other agents, your most trusted personal automation.
 
 L5 agents are subject to the same rate limiting and approval policies as all other agents. The difference is that the approval policy can be configured to auto-approve known-safe tool patterns, reducing friction for trusted agents you have already reviewed.
+
+<Callout type="warning">
+  Vault access at L5 is always scoped. An L5 agent only receives credentials explicitly granted to it in the agent config via `vault_grants`. It cannot enumerate or access other vault entries, even at the highest trust level.
+</Callout>
 
 ---
 
