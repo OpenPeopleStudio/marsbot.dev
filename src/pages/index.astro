@@ -2,7 +2,7 @@
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
-import HeroDemo from "../components/HeroDemo";
+import HeroInversion from "../components/HeroInversion";
 import Mission from "../components/Mission.astro";
 import Features from "../components/Features.astro";
 import Platforms from "../components/Platforms.astro";
@@ -16,7 +16,7 @@ import Footer from "../components/Footer.astro";
   <Nav />
   <main>
     <Hero>
-      <HeroDemo client:visible />
+      <HeroInversion client:load />
     </Hero>
     <Mission />
     <Features />
