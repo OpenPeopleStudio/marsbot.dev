@@ -1,0 +1,40 @@
+---
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import CoachChat from "../components/CoachChat";
+---
+
+<Base title="Coach Review — Open People Inc." description="Ask any question about the Open People Inc. project — canvas, architecture, thesis, traction.">
+  <Nav />
+  <main class="flex flex-col" style="height: calc(100vh - 64px); overflow: hidden;">
+
+    <!-- Header -->
+    <div class="shrink-0 border-b border-[var(--border-subtle)] bg-[var(--surface-1)] px-6 py-4">
+      <div class="max-w-4xl mx-auto flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="w-2 h-2 rounded-full bg-[var(--success)] inline-block"></span>
+            <span class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">Coach Review</span>
+          </div>
+          <h1 class="text-[var(--text-primary)] font-semibold text-lg leading-tight">Open People Inc.</h1>
+          <p class="text-[var(--text-muted)] text-xs mt-0.5 font-mono">Propel ICT Vision · v2.0 · March 2026</p>
+        </div>
+        <div class="hidden sm:flex flex-col items-end gap-1">
+          <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">Context grounded</span>
+          <div class="flex gap-1.5">
+            {["canvas", "architecture", "thesis", "traction"].map(tag => (
+              <span class="text-[9px] font-mono px-2 py-0.5 rounded-full border border-[var(--border-medium)] text-[var(--text-muted)]">{tag}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat — fills remaining height -->
+    <div class="flex-1 min-h-0 max-w-4xl mx-auto w-full relative">
+      <CoachChat client:load />
+    </div>
+
+  </main>
+</Base>
+

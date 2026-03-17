@@ -81,6 +81,12 @@ body {
 }
 .spotlight-cursor { animation: blink 1s step-end infinite; }
 
+/* Streaming dots pulse */
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
 /* Grid background */
 .bg-grid {
   background-image:
