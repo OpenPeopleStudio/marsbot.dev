@@ -2,6 +2,10 @@ import Anthropic from "@anthropic-ai/sdk";
 
 export const config = { runtime: "edge" };
 
+export function GET() {
+  return new Response(null, { status: 405, headers: { Allow: "POST" } });
+}
+
 // ─── RAG: retrieve relevant context chunks from Supabase ─────────────────────
 
 interface KnowledgeChunk {

@@ -7,6 +7,8 @@
     <a href="/" class="text-sm font-mono font-bold text-[var(--mars-orange)] tracking-wide hover:opacity-80 transition-opacity">
       MARSBOT
     </a>
+
+    <!-- Desktop links -->
     <div class="hidden md:flex items-center gap-7 text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">
       <a href="#mission" class="hover:text-[var(--text-primary)] transition-colors">Mission</a>
       <a href="#features" class="hover:text-[var(--text-primary)] transition-colors">Features</a>
@@ -17,10 +19,74 @@
       <a href="/docs/architecture" class="hover:text-[var(--text-primary)] transition-colors">Docs</a>
       <a href="/coach" class="hover:text-[var(--text-primary)] transition-colors">Coach</a>
     </div>
+
     <div class="flex items-center gap-3">
       <a href="https://github.com/open-people-studio" class="text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors hidden sm:block">
         github
       </a>
+
+      <!-- Hamburger (mobile only) -->
+      <button
+        id="nav-toggle"
+        class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 rounded-lg border border-[var(--border-medium)] transition-colors hover:border-[var(--border-strong)]"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <span class="hamburger-bar block w-4 h-px bg-[var(--text-secondary)] transition-all duration-200 origin-center"></span>
+        <span class="hamburger-bar block w-4 h-px bg-[var(--text-secondary)] transition-all duration-200"></span>
+        <span class="hamburger-bar block w-4 h-px bg-[var(--text-secondary)] transition-all duration-200 origin-center"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div
+    id="nav-mobile"
+    class="md:hidden hidden border-t border-[var(--border-subtle)] bg-[var(--void)]/95 backdrop-blur-xl"
+  >
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-1">
+      <a href="#mission" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Mission</a>
+      <a href="#features" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Features</a>
+      <a href="#platforms" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Platforms</a>
+      <a href="#trust" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Trust</a>
+      <a href="#changelog" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Log</a>
+      <a href="/ecosystem" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Ecosystem</a>
+      <a href="/docs/architecture" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Docs</a>
+      <div class="h-px bg-[var(--border-subtle)] my-1"></div>
+      <a href="/coach" class="nav-mobile-link text-xs font-mono uppercase tracking-wider px-3 py-2.5 rounded-lg transition-colors" style="color: var(--mars-orange);">Coach ↗</a>
+      <a href="https://github.com/open-people-studio" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">GitHub</a>
     </div>
   </div>
 </nav>
+
+<script>
+  const toggle = document.getElementById("nav-toggle");
+  const menu = document.getElementById("nav-mobile");
+  const bars = document.querySelectorAll(".hamburger-bar");
+
+  function openMenu() {
+    menu?.classList.remove("hidden");
+    toggle?.setAttribute("aria-expanded", "true");
+    bars[0]?.classList.add("rotate-45", "translate-y-[6px]");
+    bars[1]?.classList.add("opacity-0", "scale-x-0");
+    bars[2]?.classList.add("-rotate-45", "-translate-y-[6px]");
+  }
+
+  function closeMenu() {
+    menu?.classList.add("hidden");
+    toggle?.setAttribute("aria-expanded", "false");
+    bars[0]?.classList.remove("rotate-45", "translate-y-[6px]");
+    bars[1]?.classList.remove("opacity-0", "scale-x-0");
+    bars[2]?.classList.remove("-rotate-45", "-translate-y-[6px]");
+  }
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  // Close on any mobile link click
+  document.querySelectorAll(".nav-mobile-link").forEach(link => {
+    link.addEventListener("click", closeMenu);
+  });
+</script>
