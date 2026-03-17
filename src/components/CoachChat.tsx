@@ -187,6 +187,7 @@ export default function CoachChat() {
   const [streaming, setStreaming] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -376,49 +377,70 @@ export default function CoachChat() {
 
 
       {/* Input area */}
-      <div className="shrink-0 border-t border-[var(--border-subtle)] bg-[var(--surface-1)] px-4 py-3">
-        <div className="flex gap-2 items-end max-w-4xl mx-auto">
-
-          {/* Reset */}
-          {messages.length > 0 && (
-            <button
-              onClick={reset}
-              title="Reset conversation"
-              className="shrink-0 w-9 h-9 rounded-lg border border-[var(--border-medium)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-strong)] transition-all"
-            >
-              <RotateCcw size={14} />
-            </button>
-          )}
-
-          {/* Textarea */}
-          <div className="flex-1 relative">
+      <div className="shrink-0 border-t border-[var(--border-subtle)] px-3 sm:px-4 py-3">
+        <div className="max-w-4xl mx-auto">
+          <div
+            className="rounded-2xl border transition-all duration-200"
+            style={{
+              background: "var(--surface-1)",
+              borderColor: inputFocused ? "var(--mars-orange)" : "var(--border-medium)",
+              boxShadow: inputFocused ? "0 0 0 1px rgba(232,98,42,0.2)" : "none",
+            }}
+          >
+            {/* Textarea */}
             <textarea
               ref={textareaRef}
               value={input}
               onChange={e => { setInput(e.target.value); autoResize(); }}
               onKeyDown={handleKeyDown}
-              placeholder="Ask anything…"
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              placeholder="Ask anything about the project…"
               rows={1}
               disabled={streaming}
-              className="w-full resize-none bg-[var(--surface-2)] border border-[var(--border-medium)] rounded-xl px-4 py-2.5 pr-12 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] font-[var(--font-body)] focus:outline-none focus:border-[var(--mars-orange)] focus:ring-1 focus:ring-[var(--mars-orange)] transition-all disabled:opacity-50 overflow-hidden"
-              style={{ minHeight: "42px", maxHeight: "160px" }}
+              className="w-full resize-none bg-transparent px-4 pt-3.5 pb-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] font-[var(--font-body)] focus:outline-none disabled:opacity-50 overflow-hidden"
+              style={{ minHeight: "52px", maxHeight: "160px" }}
             />
+
+            {/* Bottom bar — hint + actions */}
+            <div className="flex items-center justify-between px-3 pb-2.5 pt-1 gap-2">
+              <span className="text-[10px] font-mono text-[var(--text-muted)] hidden sm:block select-none">
+                ↵ send &nbsp;·&nbsp; shift+enter for newline
+              </span>
+              <span className="text-[10px] font-mono text-[var(--text-muted)] sm:hidden select-none">
+                grounded in project docs
+              </span>
+
+              <div className="flex items-center gap-1.5 ml-auto">
+                {/* Reset */}
+                {messages.length > 0 && (
+                  <button
+                    onClick={reset}
+                    title="Reset conversation"
+                    className="h-7 w-7 rounded-lg flex items-center justify-center transition-colors"
+                    style={{ color: "var(--text-muted)" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "var(--text-secondary)")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "var(--text-muted)")}
+                  >
+                    <RotateCcw size={13} />
+                  </button>
+                )}
+
+                {/* Send */}
+                <motion.button
+                  whileTap={{ scale: 0.93 }}
+                  onClick={() => send(input)}
+                  disabled={!input.trim() || streaming}
+                  className="h-7 px-3 rounded-lg flex items-center gap-1.5 text-white text-xs font-mono font-medium transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  style={{ background: "var(--mars-orange)" }}
+                >
+                  <Send size={12} />
+                  <span className="hidden sm:inline">Send</span>
+                </motion.button>
+              </div>
+            </div>
           </div>
-
-          {/* Send */}
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={() => send(input)}
-            disabled={!input.trim() || streaming}
-            className="shrink-0 w-9 h-9 rounded-lg bg-[var(--mars-orange)] flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[var(--mars-orange-dim)] transition-colors"
-          >
-            <Send size={14} />
-          </motion.button>
         </div>
-
-        <p className="text-center text-[10px] text-[var(--text-muted)] mt-2 font-mono">
-          shift+enter for new line · answers grounded in project documents
-        </p>
       </div>
     </div>
   );
