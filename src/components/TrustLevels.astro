@@ -3,36 +3,36 @@
 
 const levels = [
   {
-    number: "L1",
-    role: "Observer",
+    number: "L0",
+    role: "Sandbox",
     description: "Read-only. Watch, report, and take notes. No write access, no external calls.",
     color: "#505b6b",
     capabilities: ["Read files", "Generate reports", "Log observations"],
   },
   {
-    number: "L2",
+    number: "L1",
     role: "Assistant",
     description: "Draft, suggest, and prepare content. Can write to staging areas, cannot commit.",
     color: "#5b8abf",
     capabilities: ["Draft content", "Prepare suggestions", "Stage changes"],
   },
   {
-    number: "L3",
-    role: "Worker",
+    number: "L2",
+    role: "Operator",
     description: "Execute tasks in sandbox. Web fetch, file operations within container bounds.",
     color: "#d4a033",
     capabilities: ["Sandbox execution", "Web fetch", "File operations"],
   },
   {
-    number: "L4",
+    number: "L3",
     role: "Collaborator",
     description: "External access. Draft emails, run commands on host, interact with APIs.",
     color: "#d47833",
     capabilities: ["External API calls", "Host commands", "Email drafting"],
   },
   {
-    number: "L5",
-    role: "Delegate",
+    number: "L4",
+    role: "Autonomous",
     description: "Full autonomy within configured guardrails. Acts on your behalf without confirmation.",
     color: "#d45c5c",
     capabilities: ["Full autonomy", "Credential access", "Cross-system actions"],
@@ -115,7 +115,7 @@ const levels = [
       </svg>
       <p class="text-xs text-[var(--text-muted)] leading-relaxed">
         Trust levels are assigned per-agent and per-thread. You can always reduce or revoke access.
-        Sensitive operations at L4+ require explicit capability grants in your configuration.
+        Sensitive operations at L3+ require explicit capability grants in your configuration.
       </p>
     </div>
 
