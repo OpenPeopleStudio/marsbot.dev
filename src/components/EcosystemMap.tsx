@@ -35,7 +35,7 @@ const PROJECTS: Project[] = [
       "Monorepo with 22+ packages: runtime, gateway, providers, channels, skills, sandbox, vault, workflows, CLI, TUI, web app.",
     tech: ["Node.js", "Next.js", "Supabase", "TypeScript"],
     x: 50,
-    y: 45,
+    y: 50,
     connections: [],
   },
   {
@@ -48,7 +48,7 @@ const PROJECTS: Project[] = [
       "Portable identity format for human-owned AI agents. The data standard that marsbot implements.",
     tech: ["TypeScript", "JSON Schema"],
     x: 50,
-    y: 8,
+    y: 10,
     connections: ["mars-hq"],
   },
   {
@@ -60,8 +60,8 @@ const PROJECTS: Project[] = [
     description:
       "Native SwiftUI macOS app. Sentry Mode, MCP device node, gateway host. Replaces Electron.",
     tech: ["Swift 6", "SwiftUI", "GRDB", "Vision"],
-    x: 15,
-    y: 35,
+    x: 16,
+    y: 33,
     connections: ["mars-hq"],
   },
   {
@@ -73,8 +73,8 @@ const PROJECTS: Project[] = [
     description:
       "Native iOS app with 99 MCP tools, witness capture, outpost mode. Connected via Tailscale.",
     tech: ["Swift 6", "SwiftUI", "UIKit"],
-    x: 85,
-    y: 35,
+    x: 84,
+    y: 33,
     connections: ["mars-hq"],
   },
   {
@@ -86,8 +86,8 @@ const PROJECTS: Project[] = [
     description:
       "Astro 5 static site with React islands. Ecosystem visualization, docs, changelog.",
     tech: ["Astro 5", "React", "Tailwind"],
-    x: 20,
-    y: 70,
+    x: 16,
+    y: 67,
     connections: ["mars-hq"],
   },
   {
@@ -99,8 +99,8 @@ const PROJECTS: Project[] = [
     description:
       "Red/blue team security toolkit. 11 modules, CVSS-lite scoring, scan orchestrator.",
     tech: ["TypeScript", "Node.js"],
-    x: 80,
-    y: 70,
+    x: 84,
+    y: 67,
     connections: ["mars-hq"],
   },
   {
@@ -113,7 +113,7 @@ const PROJECTS: Project[] = [
       "Public web presence at tomlane.space. Supabase edge functions, real-time visitor connections.",
     tech: ["Supabase", "Edge Functions", "React"],
     x: 50,
-    y: 85,
+    y: 88,
     connections: ["mars-hq"],
   },
 ];
@@ -183,14 +183,6 @@ function ProjectNode({
           style={{ color: isSelected ? "var(--text-primary)" : "var(--text-secondary)" }}
         >
           {project.name}
-        </span>
-
-        {/* Status badge */}
-        <span
-          className="text-[8px] font-mono font-bold uppercase tracking-wider"
-          style={{ color }}
-        >
-          {project.status}
         </span>
       </div>
     </motion.div>
