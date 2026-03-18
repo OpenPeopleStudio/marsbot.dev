@@ -132,7 +132,7 @@ function ProjectNode({
 }: {
   project: Project;
   isSelected: boolean;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
 }) {
   const Icon = project.icon;
   const color = STATUS_COLORS[project.status];
@@ -230,7 +230,7 @@ function ConnectionLines({ selected }: { selected: string | null }) {
   );
 }
 
-function DetailPanel({
+function BottomSheet({
   project,
   onClose,
 }: {
@@ -241,21 +241,22 @@ function DetailPanel({
 
   return (
     <motion.div
-      className="absolute z-30 w-72 sm:w-80"
-      style={{
-        left: `${Math.min(Math.max(project.x, 25), 75)}%`,
-        top: `${project.y + 10}%`,
-        transform: "translate(-50%, 0)",
-      }}
-      initial={{ opacity: 0, y: -8, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -8, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 16 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      className="w-full max-w-2xl mx-auto mt-3"
     >
-      <div className="glass-card rounded-xl border border-[var(--border-medium)] p-4 sm:p-5">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-mono font-bold text-[var(--text-primary)]">
+      <div
+        className="rounded-xl border p-4 sm:p-5"
+        style={{
+          background: "var(--surface-1)",
+          borderColor: "var(--border-medium)",
+        }}
+      >
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-mono font-bold text-sm" style={{ color: "var(--text-primary)" }}>
               {project.name}
             </span>
             <span
@@ -269,20 +270,24 @@ function DetailPanel({
             </span>
           </div>
           <button
+            aria-label="Close"
             onClick={(e) => {
               e.stopPropagation();
               onClose();
             }}
-            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-sm transition-colors"
+            className="shrink-0 text-xs font-mono transition-colors"
+            style={{ color: "var(--text-muted)" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "var(--text-muted)")}
           >
-            x
+            ✕
           </button>
         </div>
 
-        <p className="text-[11px] font-mono text-[var(--mars-orange)] mb-2">
+        <p className="text-[11px] font-mono mb-2" style={{ color: "var(--mars-orange)" }}>
           {project.role}
         </p>
-        <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-3">
+        <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--text-secondary)" }}>
           {project.description}
         </p>
 
@@ -290,7 +295,11 @@ function DetailPanel({
           {project.tech.map((t) => (
             <span
               key={t}
-              className="text-[9px] font-mono text-[var(--text-muted)] bg-[var(--surface-2)] px-2 py-0.5 rounded"
+              className="text-[9px] font-mono px-2 py-0.5 rounded"
+              style={{
+                color: "var(--text-muted)",
+                background: "var(--surface-2)",
+              }}
             >
               {t}
             </span>
@@ -303,63 +312,65 @@ function DetailPanel({
 
 export default function EcosystemMap() {
   const [selected, setSelected] = useState<string | null>(null);
-
   const selectedProject = PROJECTS.find((p) => p.id === selected);
 
   return (
-    <div
-      className="relative w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] overflow-hidden"
-      style={{ minHeight: "500px" }}
-      onClick={() => setSelected(null)}
-    >
-      {/* Background grid */}
-      <div className="absolute inset-0 bg-grid opacity-40 pointer-events-none" />
+    <div>
+      {/* Map */}
+      <div
+        className="relative w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)]"
+        style={{ minHeight: "500px" }}
+        onClick={() => setSelected(null)}
+      >
+        {/* Background grid */}
+        <div className="absolute inset-0 bg-grid opacity-40 pointer-events-none rounded-xl" />
 
-      {/* Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[var(--mars-orange)] opacity-[0.03] blur-[100px] rounded-full pointer-events-none" />
+        {/* Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[var(--mars-orange)] opacity-[0.03] blur-[100px] rounded-full pointer-events-none" />
 
-      {/* Connection lines */}
-      <ConnectionLines selected={selected} />
+        {/* Connection lines */}
+        <ConnectionLines selected={selected} />
 
-      {/* Project nodes */}
-      {PROJECTS.map((project) => (
-        <ProjectNode
-          key={project.id}
-          project={project}
-          isSelected={selected === project.id}
-          onClick={(e) => {
-            (e as unknown as Event).stopPropagation();
-            setSelected(selected === project.id ? null : project.id);
-          }}
-        />
-      ))}
+        {/* Project nodes */}
+        {PROJECTS.map((project) => (
+          <ProjectNode
+            key={project.id}
+            project={project}
+            isSelected={selected === project.id}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelected(selected === project.id ? null : project.id);
+            }}
+          />
+        ))}
 
-      {/* Detail panel */}
+        {/* Legend */}
+        <div className="absolute bottom-4 left-4 flex items-center gap-4 text-[9px] font-mono text-[var(--text-muted)]">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full" style={{ background: "var(--success)" }} />
+            Shipped
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full" style={{ background: "var(--mars-orange)" }} />
+            Active
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full" style={{ background: "var(--warning)" }} />
+            Beta
+          </span>
+        </div>
+      </div>
+
+      {/* Bottom sheet — outside map, never clips */}
       <AnimatePresence>
         {selectedProject && (
-          <DetailPanel
+          <BottomSheet
             key={selectedProject.id}
             project={selectedProject}
             onClose={() => setSelected(null)}
           />
         )}
       </AnimatePresence>
-
-      {/* Legend */}
-      <div className="absolute bottom-4 left-4 flex items-center gap-4 text-[9px] font-mono text-[var(--text-muted)]">
-        <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full" style={{ background: "var(--success)" }} />
-          Shipped
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full" style={{ background: "var(--mars-orange)" }} />
-          Active
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full" style={{ background: "var(--warning)" }} />
-          Beta
-        </span>
-      </div>
     </div>
   );
 }
