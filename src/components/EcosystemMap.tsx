@@ -113,7 +113,7 @@ const PROJECTS: Project[] = [
       "Public web presence at tomlane.space. Supabase edge functions, real-time visitor connections.",
     tech: ["Supabase", "Edge Functions", "React"],
     x: 50,
-    y: 88,
+    y: 82,
     connections: ["mars-hq"],
   },
 ];

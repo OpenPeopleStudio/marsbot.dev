@@ -18,12 +18,12 @@ import Footer from "../components/Footer.astro";
     <Hero>
       <HeroInversion client:load />
     </Hero>
-    <Mission />
-    <Features />
-    <Platforms />
-    <TrustLevels />
+    <section id="mission"><Mission /></section>
+    <section id="features"><Features /></section>
+    <section id="platforms"><Platforms /></section>
+    <section id="trust"><TrustLevels /></section>
     <Roadmap />
-    <Changelog />
+    <section id="changelog"><Changelog /></section>
   </main>
   <Footer />
 </Base>
