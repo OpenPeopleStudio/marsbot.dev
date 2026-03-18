@@ -3,14 +3,14 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 /* ─── Constants ─── */
 
-const TYPEWRITER_TEXT = "What if your AI actually worked for you?";
+const TYPEWRITER_TEXT = "Your AI should run on your hardware, speak your language, and answer to you alone.";
 const SCENE_DURATIONS = [4500, 4000, 4500]; // ms; scene 3 (Proof) holds
 
 const STACK_LAYERS = [
-  { label: "Gateway", sublabel: "JSON-RPC daemon · your hardware" },
-  { label: "Runtime", sublabel: "22 skill packs · tool router" },
-  { label: "Channels", sublabel: "Telegram · Slack · Discord · iMessage" },
-  { label: "Surfaces", sublabel: "macOS · iOS · Web · CLI" },
+  { label: "Gateway", sublabel: "always-on · never leaves home" },
+  { label: "Runtime", sublabel: "budget-aware · skill-routed" },
+  { label: "Channels", sublabel: "meets you where you are" },
+  { label: "Surfaces", sublabel: "native on every screen" },
 ];
 
 const STATS = [
@@ -182,7 +182,7 @@ function SceneAwakening() {
           className="font-mono text-xs tracking-widest uppercase"
           style={{ color: "var(--text-muted)" }}
         >
-          personal OS for AI agents
+          hardware-native · trust-gated · fully yours
         </span>
       </motion.div>
     </div>
@@ -317,7 +317,16 @@ function StatCard({
 
 function SceneProof() {
   return (
-    <div className="flex flex-col items-center justify-center h-full px-6 gap-6">
+    <div className="flex flex-col items-center justify-center h-full px-6 gap-5">
+      <motion.p
+        className="font-mono font-bold text-sm sm:text-base text-center"
+        style={{ color: "var(--text-secondary)" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        Not a wrapper. A runtime.
+      </motion.p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 w-full max-w-lg">
         {STATS.map((stat, i) => (
           <StatCard
@@ -335,7 +344,7 @@ function SceneProof() {
         transition={{ delay: 0.9, duration: 0.5 }}
       >
         <a href="/coach" className="btn-primary text-sm">
-          Try the Coach
+          Talk to the Coach
         </a>
         <a href="/docs" className="btn-secondary text-sm">
           Read the Docs
@@ -393,7 +402,7 @@ function ReducedMotionView() {
       </div>
       <div className="flex justify-center gap-3">
         <a href="/coach" className="btn-primary text-sm">
-          Try the Coach
+          Talk to the Coach
         </a>
         <a href="/docs" className="btn-secondary text-sm">
           Read the Docs
