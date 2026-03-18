@@ -12,7 +12,6 @@ interface Message {
 
 // ─── Mermaid renderer ─────────────────────────────────────────────────────────
 function MermaidDiagram({ code }: { code: string }) {
-  const ref = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>("");
   const [error, setError] = useState(false);
 
@@ -28,19 +27,21 @@ function MermaidDiagram({ code }: { code: string }) {
             background: "#070a0e",
             primaryColor: "#e8622a",
             primaryTextColor: "#e8ecf1",
-            primaryBorderColor: "#2a3a50",
+            primaryBorderColor: "rgba(136,147,164,0.15)",
             lineColor: "#505b6b",
             secondaryColor: "#0c1017",
             tertiaryColor: "#121820",
             edgeLabelBackground: "#0c1017",
+            clusterBkg: "#0c1017",
+            titleColor: "#e8ecf1",
             fontFamily: "JetBrains Mono, SF Mono, monospace",
-            fontSize: "13px",
+            fontSize: "12px",
           },
         });
         const id = `mermaid-${Math.random().toString(36).slice(2)}`;
         const { svg: rendered } = await mermaid.render(id, code.trim());
         if (!cancelled) setSvg(rendered);
-      } catch (e) {
+      } catch {
         if (!cancelled) setError(true);
       }
     }
@@ -50,19 +51,30 @@ function MermaidDiagram({ code }: { code: string }) {
 
   if (error) return null;
   if (!svg) return (
-    <div className="h-16 flex items-center gap-2 text-[var(--text-muted)] text-sm font-mono">
-      <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--mars-orange)] animate-pulse" />
-      rendering diagram...
+    <div className="h-12 flex items-center gap-2 font-mono text-xs" style={{ color: "var(--text-muted)" }}>
+      <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--mars-orange)" }} />
+      rendering…
     </div>
   );
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="my-4 rounded-lg border border-[var(--border-medium)] overflow-hidden bg-[var(--surface-1)] p-4"
-      dangerouslySetInnerHTML={{ __html: svg }}
-    />
+      transition={{ duration: 0.3 }}
+      className="my-3 rounded-xl overflow-auto"
+      style={{
+        background: "var(--surface-1)",
+        border: "1px solid var(--border-subtle)",
+        borderLeft: "3px solid var(--mars-orange)",
+        padding: "1.25rem 1rem",
+      }}
+    >
+      <div
+        style={{ minWidth: 0 }}
+        dangerouslySetInnerHTML={{ __html: svg.replace(/<svg /, '<svg style="max-width:100%;height:auto;display:block;margin:0 auto;" ') }}
+      />
+    </motion.div>
   );
 }
 
@@ -297,11 +309,6 @@ export default function CoachChat() {
       {/* Messages area */}
       <div ref={messagesAreaRef} className="flex-1 overflow-y-auto px-4 py-6 space-y-5 min-h-0 relative">
 
-        {/* Top gradient fade — visible when scrolled */}
-        {messages.length > 0 && (
-          <div className="sticky top-0 left-0 right-0 h-8 -mt-6 mb-2 bg-gradient-to-b from-[var(--void)] to-transparent pointer-events-none z-10" />
-        )}
-
         {/* Empty state */}
         {messages.length === 0 && (
           <motion.div
@@ -377,7 +384,7 @@ export default function CoachChat() {
 
 
       {/* Input area */}
-      <div className="shrink-0 border-t border-[var(--border-subtle)] px-3 sm:px-4 py-3">
+      <div className="shrink-0 px-3 sm:px-4 pb-3 pt-1">
         <div className="max-w-4xl mx-auto">
           <div
             className="rounded-2xl border transition-all duration-200"
