@@ -1,7 +1,4 @@
 {
-  "functions": {
-    "api/chat.ts": {
-      "runtime": "edge"
-    }
-  }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }
