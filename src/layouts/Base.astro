@@ -6,8 +6,8 @@ interface Props {
 }
 
 const {
-  title = "marsbot — run your own intelligence",
-  description = "Agents you own. Servers you control. Intelligence that answers to you.",
+  title = "marsbot — your data, your agent, your rules",
+  description = "A personal AI agent that learns your context over time. The structured dataset it builds belongs entirely to you.",
   ogImage = "/og-default.png",
 } = Astro.props;
 
@@ -36,6 +36,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
 
     <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
