@@ -167,7 +167,7 @@ function renderText(text: string) {
 }
 
 // ─── Single message ───────────────────────────────────────────────────────────
-function MessageBubble({ message }: { message: Message }) {
+function MessageBubble({ message, isStreaming = false }: { message: Message; isStreaming?: boolean }) {
   const isUser = message.role === "user";
   const parts = parseContent(message.content);
 
@@ -205,6 +205,18 @@ function MessageBubble({ message }: { message: Message }) {
             );
             return <div key={i}>{renderText(part.content)}</div>;
           })}
+          {/* Streaming cursor — blinking bar at end of growing text */}
+          {isStreaming && !isUser && (
+            <span
+              className="inline-block align-middle ml-0.5 spotlight-cursor"
+              style={{
+                width: "2px",
+                height: "0.9em",
+                background: "var(--mars-orange)",
+                verticalAlign: "middle",
+              }}
+            />
+          )}
         </div>
       </div>
     </motion.div>
@@ -234,21 +246,28 @@ export default function CoachChat() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  // Track whether user is near the bottom — only auto-scroll if they are
+  const isNearBottomRef = useRef(true);
+
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  // Auto-scroll only if user hasn't scrolled up to read
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+    if (isNearBottomRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }
+  }, [messages]);
 
-  // Track scroll position for scroll-to-bottom button visibility
+  // Track scroll position — controls auto-scroll and scroll-to-bottom button
   useEffect(() => {
     const el = messagesAreaRef.current;
     if (!el) return;
     function onScroll() {
       if (!el) return;
       const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+      isNearBottomRef.current = distFromBottom < 80;
       setShowScrollBtn(distFromBottom > 120);
     }
     el.addEventListener("scroll", onScroll, { passive: true });
@@ -274,6 +293,7 @@ export default function CoachChat() {
     const assistantMsg: Message = { id: assistantId, role: "assistant", content: "", timestamp: new Date() };
 
     setShowSuggestions(false);
+    isNearBottomRef.current = true; // Re-engage auto-scroll when user sends a message
     setMessages(prev => [...prev, userMsg, assistantMsg]);
     setInput("");
     setStreaming(true);
@@ -393,24 +413,14 @@ export default function CoachChat() {
 
         {/* Messages */}
         <AnimatePresence initial={false}>
-          {messages.map(msg => (
-            <MessageBubble key={msg.id} message={msg} />
+          {messages.map((msg, i) => (
+            <MessageBubble
+              key={msg.id}
+              message={msg}
+              isStreaming={streaming && msg.role === "assistant" && i === messages.length - 1}
+            />
           ))}
         </AnimatePresence>
-
-        {/* Streaming cursor */}
-        {streaming && (
-          <div className="flex gap-3">
-            <div className="shrink-0 w-7 h-7 rounded-full bg-[var(--surface-2)] border border-[var(--border-medium)] flex items-center justify-center text-[var(--text-muted)] mt-0.5">
-              <FigureIcon size={14} />
-            </div>
-            <div className="bg-[var(--surface-2)] rounded-xl px-4 py-3 flex gap-1 items-center">
-              {[0, 1, 2].map(i => (
-                <span key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--mars-orange)]" style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />
-              ))}
-            </div>
-          </div>
-        )}
 
         <div ref={messagesEndRef} />
 
@@ -422,7 +432,7 @@ export default function CoachChat() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.15 }}
-              onClick={scrollToBottom}
+              onClick={() => { isNearBottomRef.current = true; scrollToBottom(); }}
               className="sticky bottom-4 ml-auto mr-2 w-8 h-8 rounded-full bg-[var(--surface-elevated)] border border-[var(--border-medium)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors z-10"
             >
               <ChevronDown size={14} />
