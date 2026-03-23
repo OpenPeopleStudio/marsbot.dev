@@ -3,12 +3,13 @@ import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
 import HeroInversion from "../components/HeroInversion";
-import Mission from "../components/Mission.astro";
-import Features from "../components/Features.astro";
-import Platforms from "../components/Platforms.astro";
-import TrustLevels from "../components/TrustLevels.astro";
+import Problem from "../components/Problem.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import DataOwnership from "../components/DataOwnership.astro";
+import EarlyAccess from "../components/EarlyAccess.astro";
 import Roadmap from "../components/Roadmap.astro";
 import Changelog from "../components/Changelog.astro";
+import LongerArc from "../components/LongerArc.astro";
 import Footer from "../components/Footer.astro";
 ---
 
@@ -18,12 +19,13 @@ import Footer from "../components/Footer.astro";
     <Hero>
       <HeroInversion client:load />
     </Hero>
-    <section id="mission"><Mission /></section>
-    <section id="features"><Features /></section>
-    <section id="platforms"><Platforms /></section>
-    <section id="trust"><TrustLevels /></section>
+    <Problem />
+    <HowItWorks />
+    <DataOwnership />
+    <EarlyAccess />
     <Roadmap />
     <section id="changelog"><Changelog /></section>
+    <LongerArc />
   </main>
   <Footer />
 </Base>

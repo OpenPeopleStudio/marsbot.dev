@@ -1,0 +1,53 @@
+---
+// Data Ownership — the compounding moat + portability
+---
+
+<section id="data" class="relative py-20 sm:py-28 px-4 sm:px-6">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Section label -->
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-6 h-px bg-[var(--mars-orange)]"></span>
+      <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-[3px]">Your Data</span>
+    </div>
+
+    <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-12 tracking-tight">
+      Structured. Portable. Compounding.
+    </h2>
+
+    <!-- Two-column contrast -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+      <div class="rounded-xl p-6 border border-[var(--border-subtle)] bg-[var(--surface-1)]">
+        <span class="font-mono text-xs text-[var(--mars-orange)] uppercase tracking-wider block mb-4">What you build</span>
+        <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+          A personal dataset that knows your preferences, patterns, decisions, and context. Queryable. Growable. Every session makes it richer. Every dataset makes your agent smarter.
+        </p>
+      </div>
+      <div class="rounded-xl p-6 border border-[var(--mars-orange)]/20 bg-[var(--surface-2)]">
+        <span class="font-mono text-xs text-[var(--mars-orange)] uppercase tracking-wider block mb-4">What you keep</span>
+        <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+          Exportable in the Open People standard. Portable to any compatible system. Switch platforms anytime &mdash; your data comes with you. Not our training data. Yours.
+        </p>
+      </div>
+    </div>
+
+    <!-- Compounding callout -->
+    <p class="text-base sm:text-lg font-mono text-[var(--text-primary)] text-center max-w-2xl mx-auto mb-10 leading-relaxed">
+      "Every interaction makes your dataset richer. Every dataset makes your agent smarter. <span class="text-[var(--mars-orange)]">The compound effect is yours to keep</span> &mdash; not ours."
+    </p>
+
+    <!-- Trust signals -->
+    <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
+      {[
+        { label: "Open standard", sub: "portable by design" },
+        { label: "No lock-in", sub: "export anytime" },
+        { label: "You own it", sub: "not our training data" },
+      ].map(({ label, sub }) => (
+        <div class="text-center">
+          <span class="font-mono font-bold text-xs text-[var(--text-primary)] block">{label}</span>
+          <span class="font-mono text-[10px] text-[var(--text-muted)]">{sub}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

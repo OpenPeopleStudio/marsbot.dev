@@ -93,31 +93,32 @@ async function retrieveContext(
 const THESIS_CONTEXT = `
 ## THE 4 CORE PRODUCT INSIGHTS (always in context)
 
-### Insight 1 — Vectorization as Standard Protocol
-Vector embeddings are built into the app as a native capability from day one — not an add-on. Every connected data source is automatically vectorized. The user sees their "data structure" visibly grow from the moment they connect anything. From first launch: "You've connected 3 sources. Here's what your AI knows. Connect your calendar to unlock scheduling intelligence." This is a progress system, not a configuration screen. Every user's AI gets smarter with every piece of data added, automatically, without the user needing to know what a vector is.
+### Insight 1 — Data Asymmetry Is the Defining Problem
+Corporations invest billions structuring data about you — you don't even have access to most of it. AI agents are powerful but useless without personal context. Your data is scattered across dozens of siloed apps with no unified view. marsbot.dev closes this gap by building the structured personal dataset on the user's side.
 
-### Insight 2 — Gamified Data Growth
-Three layers of knowledge the system builds:
-1. Native — what it learns automatically from connected apps (calendar, purchases, messages, files)
-2. Assumed — patterns it draws without being told ("you seem to work best in the mornings based on your activity data")
-3. Clarified — things it asks you to confirm ("I noticed you have recurring Friday meetings — is this a standing commitment?")
-The gamification layer makes each tier visible. Connecting a new source triggers a "data unlock." Answering a question earns a "context point." You don't have to build anything — you just allow things. The structure happens underneath.
+### Insight 2 — Gamified Capability Discovery
+Learning AI has no guided path. Users either figure it out alone, get overwhelmed, or never start. marsbot.dev uses progressive disclosure of capability — not engagement manipulation. Guided quests teach you what your agent can do: "Connect your calendar → watch your agent prepare for tomorrow's meeting." The goal is capability, not screen time. Three knowledge tiers (native, assumed, clarified) make growth visible.
 
 ### Insight 3 — The Context Window Thesis
-AI context windows are growing exponentially. GPT-4 launched with 8K tokens. Today models handle 1M+. In 3–5 years, the entire contents of a person's digital life will fit inside a single context window. The constraint today is not intelligence — it's context. The people who have been building structured personal data since 2026 will have an asset no late-mover can replicate. OpenPeopleStudio is building the infrastructure for that future. The data itself is the moat — not the app. A user with 12+ months of structured data has something irreplaceable. Switching means starting over.
+AI context windows are growing exponentially. GPT-4 launched with 8K tokens. Today models handle 1M+. In 3–5 years, the entire contents of a person's digital life will fit inside a single context window. The constraint today is not intelligence — it's context. The people who have been building structured personal data since 2026 will have an asset no late-mover can replicate. The data itself is the moat — not the app. A user with 12+ months of structured data has something irreplaceable. Switching means starting over.
 
 ### Insight 4 — The North Star: AI Prompts You
-Every AI product today is built around one model: you type, it responds. The AI is passive. A sophisticated search box. The vision: an AI that has enough context, memory, and trust to initiate. It notices something in your data. It asks you the question. You answer. It updates its model of you. You have a conversation — not a query session.
+Every AI product today is built around one model: you type, it responds. The AI is passive. The vision: an AI that has enough context, memory, and trust to initiate. It notices something in your data. It asks you the question. You answer. It updates its model of you. You have a conversation — not a query session.
 Examples:
 - "Your restaurant's labour cost ran 4% over target last week. I think I know why — want to talk through it?"
 - "You haven't written anything in 11 days. Last time this happened you said you were stuck on structure. Is that what's going on?"
-Why no one has done this well: it requires persistent identity, structured memory, and trust architecture. Stateless AI can't do it. OpenPeopleStudio has all three: the open-people identity standard, the vectorized personal data layer, and the 5-level trust model.
+Why no one has done this well: it requires persistent identity, structured memory, and trust architecture. Stateless AI can't do it. marsbot.dev has all three: the open-people identity standard, the vectorized personal data layer, and the 5-level trust model.
 
-## LONG-TERM VISION
-Year 1 (2026): First 500 users. Technical Solo Builders validate product. Restaurant + SMB track validates commercial value. open-people spec published.
-Year 2 (2027): 10,000 users. Non-developer onboarding frictionless. First third-party implementations of open-people spec. Commercial tier live for SMBs.
-Year 3 (2028): open-people standard becomes the default format for portable personal AI data — the way OAuth became default for web identity.
-Year 5 (2030): Context windows large enough to hold a full human digital identity. Users of OpenPeopleStudio have 4 years of structured personal data. Their AI knows them better than any cloud product ever could — and they own every bit of it.
+## DUAL-PHASE VISION
+
+### Phase 1 — Near Term: Your Data. Your Agent. Your Rules.
+A personal AI agent platform that teaches you what's possible — by running alongside you, not in front of you. The wedge product is marsbot.dev. Revenue model is API token markup (20%) — we handle provisioning, billing, model routing, context injection, and tool integration. Users access frontier models through the platform without managing their own keys.
+
+### Phase 2 — Interplanetary: Data Is the First Interplanetary Commodity
+When latency makes real-time impossible, your structured identity is what lets autonomous systems act on your behalf. Interplanetary latency is unavoidable (Earth to Mars: 4–24 minutes one-way). Bandwidth will be rationed. Autonomous systems need a complete, portable, structured representation of you — and that doesn't exist yet. The same dataset format users build on Earth (Phase 1) becomes the identity payload that ships to Mars.
+
+### The Connection
+If you build the personal structured data standard now — while the world is figuring out AI agents — you own the rails when data needs to travel beyond Earth. The structured dataset is the constant. The distance changes.
 
 ## TRACTION SNAPSHOT (March 2026)
 - ~1.4M source lines built solo
@@ -126,84 +127,148 @@ Year 5 (2030): Context windows large enough to hold a full human digital identit
 - Ed25519 DID + .opkg format, 5 reference packages — open-people standard is spec-complete
 - All tests passing: 19/19 smoke, 21/21 gateway, 31/31 vault, 73 autonomous outpost tests
 - Live restaurant deployment: 8+ systems consolidated (POS, reservations, scheduling, inventory, QuickBooks, email, design tools, website)
-- openpeople.ai + tomlane.space live
+- openpeople.ai + marsbot.dev live
 - Andrew Collingwood 10MW data centre: enterprise tier conversations underway
 `;
 
 // ─── TIER 2: Project context ──────────────────────────────────────────────────
 const PROJECT_CONTEXT = `
-## OPEN PEOPLE INC. — FULL PROJECT CONTEXT
+## OPEN PEOPLE INC. — DUAL VISION LEAN CANVAS
 
 ### The Business in One Paragraph
-Open People Inc. is building OpenPeopleStudio — a personal AI operating environment that runs on your own hardware, learns your context from every tool you already use, and proactively surfaces insights and questions before you think to ask. Unlike every current AI product, which resets every session and waits passively for a prompt, OpenPeopleStudio builds a persistent, structured, cryptographically-owned model of the user that compounds in value every day. It installs like a native app (no terminal, no plugin store), automatically vectorizes all connected data sources, and is designed for the trajectory of AI.
+Open People Inc. is building marsbot.dev — a personal AI agent that runs alongside you, learns your context over time, and grows a structured personal dataset that you own. Unlike every current AI product (which resets every session and waits passively for prompts), marsbot.dev builds a persistent, portable, user-owned model that compounds in value every day. The same structured identity standard (Open People) that powers your personal agent today becomes the portable identity format for autonomous systems operating at interplanetary distance tomorrow.
 
-### UVP
-"The only personal AI that pays attention — it learns your context, grows with your data, and asks you the questions that matter. No terminal. No plugins. Yours forever."
-High-Level Concept: "Every other AI waits for you to ask. Ours is already thinking."
+Corporations built empires on structured data about you. We're giving you the same thing — and making it portable enough to leave the planet.
+
+---
+
+## PHASE 1 — NEAR TERM: YOUR DATA. YOUR AGENT. YOUR RULES.
 
 ### Problem
-1. AI resets every session — no memory, no initiative, no persistent model of who you are (77% of knowledge workers say AI tools don't retain enough context to be genuinely useful across sessions — McKinsey 2024)
-2. Your data lives across 6–10 disconnected apps you don't control — unstructured, unqueryable, invisible to AI. Average knowledge worker uses 9.4 apps daily. Average SMB runs 6–10 operational tools. None share data.
-3. The tools that exist for local AI require terminal setup — locking out 98% of the people who need it most
+1. Corporations invest billions structuring data about you — you don't even have access to most of it.
+2. AI agents are powerful but useless without personal context. Your data is scattered across dozens of siloed apps.
+3. Learning AI has no guided path. Users either figure it out alone, get overwhelmed, or never start.
 
-### Existing Alternatives & Why They Fail
-- Cloud AI (ChatGPT, Claude) — capable but stateless, cloud-only, you own nothing
-- PKM tools (Notion, Obsidian) — structured but passive, no AI agency, manually built
-- Workflow builders (n8n, Zapier) — automated but not AI-native, no memory or identity
-- Local AI tools (Ollama/Claude Code, LangChain) — powerful but developer-only, terminal required, plugin safety risks
-The gap none of them fill: A personal AI that is easy to install, builds a structured model of you over time, runs on your hardware, asks you questions rather than waiting for prompts, and stores your data in a format that is cryptographically yours.
+The data asymmetry between corporations and individuals is the defining problem of the AI era. Companies have entire teams building data pipelines to structure information about their users. Meanwhile, users can't even export a unified view of their own digital identity. As AI agents become more capable, this gap becomes a chasm — the agent that knows you best won't be yours, it'll be theirs.
 
-### Solution (as a sequence)
-1. Native app install — no terminal, guided setup from first launch, any platform
-2. Automatic data ingestion + vectorization — connect existing tools, AI structures everything
-3. Gamified data growth — three knowledge tiers (native, assumed, clarified) with visible progress
-4. AI-initiated interactions — your agent asks you the questions that matter
-5. open-people .opkg format — your data, cryptographically signed and yours forever
+### Solution
+1. marsbot.dev — a personal AI agent that runs alongside you and learns your context over time.
+2. Gamified onboarding that progressively teaches capability without manipulating screen time.
+3. Structured personal dataset that you own — portable, queryable, growing with every interaction.
 
-### Key Metrics
-- North Star: AI-initiated interactions per active user per week (target: 3+)
-- Data depth score: avg. sources connected per user (target: 3+ at 30 days)
-- Activation rate: % reaching first AI-initiated interaction within 7 days (target: 60%)
-- Paid conversion rate: free → paid within 60 days (target: 15% overall, 25% SMB)
-- D30 retention: % still active at 30 days (target: 30%+)
+From first launch, users connect data sources and watch their agent's understanding grow. The gamification layer makes capability discovery feel natural — guided quests like "Connect your calendar → watch your agent prepare for tomorrow's meeting." Each step shows real value. The structured dataset underneath is portable (Open People standard) and compounds with every interaction.
+
+### Unique Value Proposition
+The first platform where your AI agent actually knows you — because you own the structured data that powers it. Every interaction makes your dataset richer. Every dataset makes your agent smarter. The compound effect is yours to keep.
+
+High-level concept: "Personal data sovereignty meets AI — what if you had what corporations have, but it worked for you?"
+
+The key differentiator is ownership. Unlike ChatGPT or Copilot, your data doesn't train someone else's model. It builds your personal dataset in a portable, open standard. Switch platforms anytime — your data comes with you.
 
 ### Unfair Advantage
-1. Personal data flywheel — structured data compounds daily; switching means starting over
-2. open-people standard — first-mover on the portable AI identity format; others build to our spec
-3. Live restaurant deployment — working proof across personal + commercial use cases, pre-launch
-4. 5-level trust architecture — requires identity + memory + audit trail from the ground up; can't be retrofitted
-5. Strategic infrastructure partnership — 10MW Canadian data centre (Andrew Collingwood) for enterprise sovereign hosting
-6. Context window thesis — platform built for AI's trajectory, not its current state
+1. Compounding data moat — the longer you use it, the more valuable your dataset becomes.
+2. No lock-in by design (portable standard), but natural retention because your agent knows you.
+3. Open data standard creates ecosystem effects — others build on what you own.
 
 ### Customer Segments
-- Primary: The Capable Non-Developer — digitally fluent knowledge workers, consultants, SMB owners. Never opened a terminal. Any platform.
-- Secondary: SMB Owners with fragmented operational data — restaurants, clinics, professional services running 6–10 disconnected tools.
-- Tertiary (enterprise): Canadian institutions seeking AI data sovereignty — government, healthcare, financial services. Pathway via Collingwood data centre.
+- Early adopters: tech-forward individuals who want AI agents working for them.
+- Knowledge workers: professionals drowning in fragmented tools and context-switching.
+- Companies (B2B2C): organizations that want to give employees personal AI agents.
 
-Early Adopter Tracks:
-- Track A (Technical): Developers already running Ollama who've tried to stitch their own agent setup and hit walls
-- Track B (Non-technical): Digitally confident users who've tried ChatGPT, found it forgets everything
-- Track C (Commercial): SMB owners paying for 5+ disconnected apps who've given up on manual consolidation
+Early adopter profile: Already uses 3+ AI tools, frustrated by starting from zero every session, willing to invest time in building a personal dataset because they understand the compound value.
 
-### Channels (phased)
-Phase 1 (seeding): Hacker News / r/LocalLLaMA, live restaurant demo, founder's network
-Phase 2 (launch): open-people GitHub, YouTube problem-first videos, Product Hunt
-Phase 3 (scale): App stores (Mac + iOS), "AI prompted me" share moments, Collingwood infrastructure partner pipeline
+### Key Metrics
+- Active agents (users with running personal agents)
+- Structured data points per user (growing = engaged)
+- API revenue per user per month
+- Gamification stage completion rates
+- B2B2C seat expansion rate
 
-### Revenue Model
-- Free: local models only, 5 agents, 50 tools (self-hosted)
-- Pro: $20/month — cloud sync, all tools, all channels
-- Power: $50/month — workflows, API access, advanced agents
-- Team: $30/user/month — shared agents, collective workspaces
-- Enterprise: $50K+/year — on-premises, Canadian data residency (Collingwood data centre pathway)
+### Channels
+- marsbot.dev — direct B2C platform
+- Developer community + open standard adoption
+- B2B2C sales — packaged for company-wide deployment
+- Word of mouth from gamified "aha moments"
 
 ### Cost Structure
-- Infrastructure: Supabase, Vercel, Tailscale (~$2–5K/month at launch)
-- LLM API costs: partially passed through; local models are free
-- Engineering: founder now, first hire post-launch
-- Marketing: near-zero Year 1 (organic), ~$5–15K/year Year 2
+- API costs — wholesale access to frontier models (primary variable cost)
+- Infrastructure — hosting, storage, compute for agent orchestration
+- Development — platform, gamification engine, data pipelines
+- Community & support — developer relations, documentation
 
-### Technical Architecture — What's Built
+### Revenue Streams
+- API token markup (20%) — we handle provisioning, billing, and rate limiting. The value isn't the key — it's the orchestration: model routing, context injection from the structured dataset, agent memory, and tool integration.
+- B2B2C enterprise packages — per-seat managed agent deployment
+- Premium tiers — advanced capabilities, higher storage, priority model access
+- Future: marketplace for agent skills and data integrations
+
+---
+
+## PHASE 2 — INTERPLANETARY: DATA IS THE FIRST INTERPLANETARY COMMODITY
+
+When latency makes real-time impossible, your structured identity is what lets autonomous systems act on your behalf.
+
+### Problem
+1. Interplanetary latency is unavoidable. Earth to Mars: 4–24 minutes one-way.
+2. Bandwidth will be rationed — reserved for critical updates only.
+3. Autonomous systems need a complete, portable, structured representation of you — and that doesn't exist.
+
+The physics is non-negotiable. Light-speed delay between Earth and Mars ranges from 4 to 24 minutes depending on orbital position. You cannot have a real-time conversation with a system on Mars. Bandwidth between planets will be scarce and expensive. The only solution is to ship your identity ahead of time.
+
+### Solution
+1. Open People Standard — a portable, structured human identity format.
+2. Data-as-cargo infrastructure — physically shipping data is faster than transmitting it.
+3. Agent framework that operates autonomously using your identity data with no live connection.
+
+The same dataset format you build on Earth (Phase 1) becomes the identity payload that ships to Mars. Your robot, your construction system, your terraforming agents — they all operate against your structured identity. When new data arrives via physical shipment, they update. Between shipments, they have enough context to act on your behalf.
+
+### Unique Value Proposition
+Your robot on Mars should know you as well as your agent on Earth. The Open People standard makes your identity portable across any distance. Data becomes currency — the first real commodity to ship interplanetary. Not because of speculation — because of physics.
+
+### Unfair Advantage
+1. If you own the standard now, you own the rails later.
+2. Years of compounded personal datasets from Phase 1 = the richest identity data in existence.
+3. Network effects: every system that adopts the standard makes every identity more useful.
+
+### Customer Segments
+- Space agencies & commercial space — identity frameworks for remote operations.
+- Autonomous systems operators — robots, drones, AI at distance.
+- Terraforming & off-world construction — human-directed, latency-constrained.
+- Every Phase 1 user — their dataset is already built.
+
+### Key Metrics
+- Standard adoption (systems integrating the format)
+- Identity datasets shipped (physical data transfers)
+- Autonomous operations running against identities
+- Latency-independent task completion rate
+
+### Channels
+- Open standard adoption via developer ecosystem
+- Partnerships with space agencies and commercial operators
+- Government and defense contracts
+- Phase 1 user base as natural migration path
+
+### Cost Structure
+- Standard governance & development
+- Data-as-cargo infrastructure
+- Partnerships and certifications with space industry
+- Research — edge AI, autonomous identity systems
+
+### Revenue Streams
+- Data-as-commodity — structured identity datasets as tradeable assets
+- Standard licensing — commercial operators license for off-world systems
+- Infrastructure fees — data packaging, shipping, verification
+- Enterprise contracts — government, defense, commercial space
+
+---
+
+## PHASE 1 → PHASE 2 BRIDGE
+If you build the personal structured data standard now — while the world is figuring out AI agents — you own the rails when data needs to travel beyond Earth. The same architecture that lets your agent know you across apps today is what lets your agent act on your behalf across planets tomorrow. The structured dataset is the constant. The distance changes.
+
+---
+
+## TECHNICAL ARCHITECTURE — WHAT'S BUILT
+
 mars-hq: 23-package TypeScript monorepo. Core packages: gateway (LLM routing), vault (encrypted identity store), agent-runtime (tool execution), channel adapters (6: TUI, web, desktop, mobile, API, MCP). 129 agent tools. 6 LLM providers (Anthropic, OpenAI, Ollama, Groq, Mistral, Gemini).
 
 mars-mac: Native macOS app in SwiftUI. Phases M1–M7 complete. Acts as primary desktop interface and MCP gateway host.
@@ -220,14 +285,12 @@ open-people standard: Ed25519 DID identity format. .opkg signed data package for
 - Level 4: Autonomous — acts independently within defined boundaries
 Agents start at Level 0 and earn access through demonstrated competence. Cannot be retrofitted onto flat permission systems.
 
-Data vectorization protocol: Every connected data source is automatically chunked and embedded into a vector index. Semantic search is available from first connection. The user sees a "data depth score" grow with every source added.
-
 Test suite: 19/19 smoke tests, 21/21 gateway tests, 31/31 vault tests, 73 autonomous outpost tests — all passing as of March 2026.
 
 ### The Restaurant Proof Case
 The founder's restaurant runs on: Square (POS), OpenTable/Resy (reservations), 7shifts/Deputy (scheduling), inventory management, QuickBooks (accounting), email, Canva/Photoshop (design), public website + admin site. 8+ systems, none sharing data.
 Problems it proves: regulars are invisible (customer exists in 3 systems with zero connection), problems appear after they cost money (labour blowout shows up in QuickBooks 30 days after the decision), reactive-only operations.
-What OpenPeopleStudio does: single ingestion point across all 8 systems, normalises data, gives AI agent full context to answer: "Who are my best customers?", "Am I going to be overstaffed Friday?", "What menu items are dragging down food cost margin?"
+What marsbot.dev does: single ingestion point across all 8 systems, normalises data, gives AI agent full context to answer: "Who are my best customers?", "Am I going to be overstaffed Friday?", "What menu items are dragging down food cost margin?"
 This is a live deployment on real operational data — not a demo.
 
 ### Andrew Collingwood / 10MW Data Centre
@@ -235,29 +298,33 @@ Andrew Collingwood is developing a 10MW data centre project. Three simultaneous 
 - Infrastructure partner: his data centre becomes the hosting layer for the enterprise tier
 - Potential first enterprise customer: the data centre project is a deployment candidate
 - Potential investor: aligned on infrastructure + sovereign AI thesis
-Why it matters: Canadian data sovereignty is a live commercial issue. Bill C-27, Quebec Law 25, US political uncertainty creating active demand for Canadian-sovereign AI. 10+ enterprise contracts at $50K = $500K+ ARR.
+Why it matters: Canadian data sovereignty is a live commercial issue. Bill C-27, Quebec Law 25, US political uncertainty creating active demand for Canadian-sovereign AI.
 Status: conversations underway. Not yet contracted. Not yet confirmed investment.
 
-### Traction Roadmap
-Phase 1 — Validation (Now → June 2026): 10 beta users, first external North Star hit (3+ AI-initiated interactions/week), open-people spec public, restaurant case study published, Collingwood LOI/MOU
-Phase 2 — Signal (June → Sept 2026): 50 users, first paying external user, $500 MRR, first SMB inquiry beyond restaurant
-Phase 3 — Growth (Sept 2026 → Mar 2027): 500 users, $5K MRR, median active user at North Star metric, first enterprise proposal via Collingwood network
+### Anticipated Tough Questions — Pre-Answered
+Q: You don't have a product in market yet — why should we care?
+A: The platform is marsbot.dev. The wedge is a personal AI agent with gamified onboarding. The revenue model is proven (API markup is how every AI platform monetizes today). What we're building differently is the structured personal dataset underneath — that's the long-term asset, and it starts compounding from day one.
 
-### Minimum Success Criteria (3-year target)
-$10,000,000 ARR by 2029. Path: ~15,000 Pro/Power users at $30/month blended + ~500 Team accounts at 10 users avg + 10–20 enterprise contracts at $50K.
+Q: How is this different from ChatGPT / Anthropic / any AI tool?
+A: Those are model providers. We're the identity layer. ChatGPT doesn't remember you across sessions in a structured way. We build a portable, user-owned dataset that works with any model — including theirs. We're not competing with frontier models. We're the context they're missing.
 
-### Common Questions — Pre-Answered
-Q: Why hasn't someone already built this?
-A: The hard part isn't the AI — it's the identity layer, the trust architecture, and the guided setup. OpenClaw has the AI, not the experience. ChatGPT has the experience, not the ownership. No one has both.
+Q: The Mars thing sounds like science fiction.
+A: The physics is real — light-speed latency between planets is measured in minutes to hours. Starlink already proved that physical infrastructure beats pure transmission at scale. We're building the identity layer on Earth today that becomes the standard when distance demands it.
 
-Q: What's the moat against a well-funded competitor?
-A: Four independent moats: (1) data flywheel — user data compounds daily, switching means starting over; (2) open standard first-mover — others build to our spec; (3) trust architecture — can't be retrofitted; (4) Canadian data residency — requires physical infrastructure.
+Q: 20% API markup — why won't users just get their own keys?
+A: Some will, and that's fine. The value isn't the key — it's the orchestration. We handle model routing, context injection from your structured dataset, agent memory, and tool integration. People who want a working agent without managing infrastructure are our target.
+
+Q: What stops Big Tech from building this?
+A: Incentive misalignment. Google, Meta, and Apple profit from siloing your data. A portable, user-owned data standard is against their business model. They'll build AI agents — but within their walled garden. We're building the cross-garden identity.
+
+Q: What does "gamify" mean here — isn't that manipulative?
+A: Progressive disclosure of capability — not engagement manipulation. Guided quests that teach you what your agent can do. The goal is capability, not screen time.
 
 Q: How does a solo founder build this?
 A: Already has. ~1.4M lines, all tests green, live commercial deployment. Product exists. Task now is acquisition and validation, not construction.
 
 Q: What are the biggest risks?
-A: (1) Solo founder concentration — mitigated by first hire post-launch; (2) Pre-revenue stage — restaurant proof case is a working commercial deployment even before external users; (3) Non-technical onboarding not yet tested externally — the guided setup exists in the product, external beta testing is Phase 1; (4) Enterprise pipeline currently dependent on one relationship (Collingwood) — risk acknowledged, additional enterprise introductions needed in Year 2.
+A: (1) Solo founder concentration — mitigated by first hire post-launch; (2) Pre-revenue stage — restaurant proof case is a working commercial deployment even before external users; (3) Non-technical onboarding not yet tested externally — external beta testing is Phase 1; (4) Enterprise pipeline currently dependent on one relationship (Collingwood) — additional enterprise introductions needed in Year 2.
 `;
 
 // ─── SYSTEM PROMPT builder ────────────────────────────────────────────────────

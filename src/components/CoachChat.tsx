@@ -2,6 +2,33 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, RotateCcw, ChevronDown } from "lucide-react";
 
+// ─── Inevitable Figure icon ──────────────────────────────────────────────────
+function FigureIcon({ size = 16, className = "" }: { size?: number; className?: string }) {
+  const h = Math.round(size * 1.28);
+  return (
+    <svg width={size} height={h} viewBox="0 0 180 230" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <circle cx="90" cy="32" r="20" fill="none" stroke="currentColor" strokeWidth="2.2"/>
+      <path d="M80 51 Q77 62, 73 76 Q68 94, 67 110 Q66 126, 68 140 Q70 152, 72 160 Q72 170, 68 182 Q62 196, 54 210" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M73 78 Q62 84, 50 94 Q38 106, 30 120" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M100 51 Q102 58, 104 66" fill="none" stroke="currentColor" strokeWidth="2"/>
+      <line x1="104" y1="66" x2="108" y2="86" stroke="currentColor" strokeWidth="2"/>
+      <line x1="108" y1="86" x2="110" y2="110" stroke="currentColor" strokeWidth="1.8"/>
+      <line x1="110" y1="110" x2="108" y2="140" stroke="currentColor" strokeWidth="1.6"/>
+      <line x1="108" y1="140" x2="104" y2="160" stroke="currentColor" strokeWidth="1.6"/>
+      <line x1="104" y1="160" x2="112" y2="186" stroke="currentColor" strokeWidth="1.4"/>
+      <line x1="112" y1="186" x2="124" y2="210" stroke="currentColor" strokeWidth="1.2"/>
+      <path d="M100 51 Q108 60, 118 72" fill="none" stroke="currentColor" strokeWidth="1.8"/>
+      <line x1="118" y1="72" x2="134" y2="86" stroke="currentColor" strokeWidth="1.5"/>
+      <line x1="134" y1="86" x2="146" y2="104" stroke="currentColor" strokeWidth="1.3"/>
+      <circle cx="104" cy="66" r="3.2" fill="var(--void, #070a0e)" stroke="currentColor" strokeWidth="1.2"/>
+      <circle cx="108" cy="86" r="3.2" fill="var(--void, #070a0e)" stroke="currentColor" strokeWidth="1.2"/>
+      <circle cx="104" cy="160" r="3.2" fill="var(--void, #070a0e)" stroke="currentColor" strokeWidth="1.2"/>
+      <circle cx="118" cy="72" r="3.2" fill="var(--void, #070a0e)" stroke="currentColor" strokeWidth="1.2"/>
+      <circle cx="134" cy="86" r="2.8" fill="var(--void, #070a0e)" stroke="currentColor" strokeWidth="1"/>
+    </svg>
+  );
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Message {
   id: string;
@@ -152,13 +179,15 @@ function MessageBubble({ message }: { message: Message }) {
       className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}
     >
       {/* Avatar */}
-      <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold mt-0.5 ${
-        isUser
-          ? "bg-[var(--surface-3)] text-[var(--text-secondary)] border border-[var(--border-medium)]"
-          : "bg-[var(--mars-orange)] text-white"
-      }`}>
-        {isUser ? "you" : "op"}
-      </div>
+      {isUser ? (
+        <div className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold mt-0.5 bg-[var(--surface-3)] text-[var(--text-secondary)] border border-[var(--border-medium)]">
+          you
+        </div>
+      ) : (
+        <div className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 bg-[var(--surface-2)] border border-[var(--border-medium)] text-[var(--text-muted)]">
+          <FigureIcon size={14} />
+        </div>
+      )}
 
       {/* Bubble */}
       <div className={`max-w-[82%] ${isUser ? "items-end" : "items-start"} flex flex-col gap-1`}>
@@ -184,12 +213,12 @@ function MessageBubble({ message }: { message: Message }) {
 
 // ─── Suggested prompts ────────────────────────────────────────────────────────
 const SUGGESTIONS = [
-  "What makes this defensible against well-funded competitors?",
-  "Walk me through the technical architecture",
-  "Show me the data flywheel as a diagram",
-  "Is the traction roadmap realistic?",
-  "What's the go-to-market strategy?",
-  "Where is AI headed and why does this matter long-term?",
+  "What's the 20% API markup model — why won't users just get their own keys?",
+  "Walk me through the data flywheel as a diagram",
+  "How is this different from ChatGPT or Claude?",
+  "What stops Big Tech from building this?",
+  "What does 'gamify' mean here — isn't that manipulative?",
+  "Where is AI headed and why does this matter in 5 years?",
 ];
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -233,15 +262,18 @@ export default function CoachChat() {
     ta.style.height = Math.min(ta.scrollHeight, 160) + "px";
   }, []);
 
-  const send = useCallback(async (text: string) => {
+  const send = useCallback(async (text: string, displayText?: string) => {
     const content = text.trim();
     if (!content || streaming) return;
 
-    setShowSuggestions(false);
-    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content, timestamp: new Date() };
+    // displayText is what shows in the chat bubble; content is what goes to the API
+    const visibleContent = displayText?.trim() || content;
+    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: visibleContent, timestamp: new Date() };
+    const apiMsg = { role: "user" as const, content };
     const assistantId = crypto.randomUUID();
     const assistantMsg: Message = { id: assistantId, role: "assistant", content: "", timestamp: new Date() };
 
+    setShowSuggestions(false);
     setMessages(prev => [...prev, userMsg, assistantMsg]);
     setInput("");
     setStreaming(true);
@@ -250,7 +282,7 @@ export default function CoachChat() {
     abortRef.current = new AbortController();
 
     try {
-      const history = [...messages, userMsg].map(m => ({ role: m.role, content: m.content }));
+      const history = [...messages.map(m => ({ role: m.role, content: m.content })), apiMsg];
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -288,6 +320,20 @@ export default function CoachChat() {
     }
   }, [messages, streaming]);
 
+  // Auto-send from ?q= URL parameter (e.g. from canvas deep-link)
+  // ?q= is the full prompt sent to the API, ?d= is the clean display text shown in chat
+  const autoSentRef = useRef(false);
+  useEffect(() => {
+    if (autoSentRef.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    const d = params.get("d");
+    if (q?.trim()) {
+      autoSentRef.current = true;
+      setTimeout(() => send(q.trim(), d?.trim() || undefined), 100);
+    }
+  }, [send]);
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -317,7 +363,9 @@ export default function CoachChat() {
             className="flex flex-col items-center justify-center h-full gap-6 pt-8 pb-4"
           >
             <div className="text-center space-y-2">
-              <div className="w-10 h-10 rounded-full bg-[var(--mars-orange)] flex items-center justify-center text-white font-mono font-bold text-sm mx-auto mb-4">op</div>
+              <div className="w-10 h-10 rounded-full bg-[var(--surface-2)] border border-[var(--border-medium)] flex items-center justify-center text-[var(--text-muted)] mx-auto mb-4">
+                <FigureIcon size={20} />
+              </div>
               <h3 className="text-[var(--text-primary)] font-semibold">Ask anything about Open People Inc.</h3>
               <p className="text-[var(--text-muted)] text-sm max-w-sm">
                 From the canvas to the codebase. Business model, technical architecture, thesis on where AI is headed.
@@ -353,7 +401,9 @@ export default function CoachChat() {
         {/* Streaming cursor */}
         {streaming && (
           <div className="flex gap-3">
-            <div className="shrink-0 w-7 h-7 rounded-full bg-[var(--mars-orange)] flex items-center justify-center text-xs font-mono font-bold text-white mt-0.5">op</div>
+            <div className="shrink-0 w-7 h-7 rounded-full bg-[var(--surface-2)] border border-[var(--border-medium)] flex items-center justify-center text-[var(--text-muted)] mt-0.5">
+              <FigureIcon size={14} />
+            </div>
             <div className="bg-[var(--surface-2)] rounded-xl px-4 py-3 flex gap-1 items-center">
               {[0, 1, 2].map(i => (
                 <span key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--mars-orange)]" style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />

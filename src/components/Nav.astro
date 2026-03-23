@@ -1,5 +1,5 @@
 ---
-// Fixed top nav — monospace, void aesthetic
+// Fixed top nav — simplified, void aesthetic
 ---
 
 <nav class="fixed top-0 left-0 right-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--void)]/90 backdrop-blur-xl">
@@ -10,13 +10,10 @@
 
     <!-- Desktop links -->
     <div class="hidden md:flex items-center gap-7 text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">
-      <a href="#mission" class="hover:text-[var(--text-primary)] transition-colors">Mission</a>
-      <a href="#features" class="hover:text-[var(--text-primary)] transition-colors">Features</a>
-      <a href="#platforms" class="hover:text-[var(--text-primary)] transition-colors">Platforms</a>
-      <a href="#trust" class="hover:text-[var(--text-primary)] transition-colors">Trust</a>
-      <a href="#changelog" class="hover:text-[var(--text-primary)] transition-colors">Log</a>
-      <a href="/ecosystem" class="hover:text-[var(--text-primary)] transition-colors">Ecosystem</a>
-      <a href="/docs/architecture" class="hover:text-[var(--text-primary)] transition-colors">Docs</a>
+      <a href="/#how-it-works" class="hover:text-[var(--text-primary)] transition-colors">How it works</a>
+      <a href="/#data" class="hover:text-[var(--text-primary)] transition-colors">Your data</a>
+      <a href="/#changelog" class="hover:text-[var(--text-primary)] transition-colors">Log</a>
+      <a href="/lean-canvas" class="hover:text-[var(--text-primary)] transition-colors">Canvas</a>
       <a href="/coach" class="hover:text-[var(--text-primary)] transition-colors">Coach</a>
     </div>
 
@@ -45,16 +42,13 @@
     class="md:hidden hidden border-t border-[var(--border-subtle)] bg-[var(--void)]/95 backdrop-blur-xl"
   >
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-1">
-      <a href="#mission" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Mission</a>
-      <a href="#features" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Features</a>
-      <a href="#platforms" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Platforms</a>
-      <a href="#trust" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Trust</a>
-      <a href="#changelog" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Log</a>
-      <a href="/ecosystem" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Ecosystem</a>
-      <a href="/docs/architecture" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Docs</a>
+      <a href="/#how-it-works" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">How it works</a>
+      <a href="/#data" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Your data</a>
+      <a href="/#changelog" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Log</a>
       <div class="h-px bg-[var(--border-subtle)] my-1"></div>
+      <a href="/lean-canvas" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">Canvas</a>
       <a href="/coach" class="nav-mobile-link text-xs font-mono uppercase tracking-wider px-3 py-2.5 rounded-lg transition-colors" style="color: var(--mars-orange);">Coach ↗</a>
-      <a href="https://github.com/open-people-studio" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">GitHub</a>
+      <a href="https://github.com/open-people-studio" target="_blank" rel="noopener noreferrer" class="nav-mobile-link text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider px-3 py-2.5 rounded-lg hover:bg-[var(--surface-1)] hover:text-[var(--text-primary)] transition-colors">GitHub</a>
     </div>
   </div>
 </nav>
@@ -85,7 +79,6 @@
     isOpen ? closeMenu() : openMenu();
   });
 
-  // Close on any mobile link click
   document.querySelectorAll(".nav-mobile-link").forEach(link => {
     link.addEventListener("click", closeMenu);
   });

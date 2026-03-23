@@ -1,0 +1,69 @@
+---
+// How It Works — three-step solution flow
+---
+
+<section id="how-it-works" class="relative py-20 sm:py-28 px-4 sm:px-6">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Section label -->
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-6 h-px bg-[var(--mars-orange)]"></span>
+      <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-[3px]">How It Works</span>
+    </div>
+
+    <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-4 tracking-tight">
+      An agent that actually knows you.
+    </h2>
+    <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl mb-12 leading-relaxed">
+      marsbot learns your context, builds a structured dataset, and compounds over time. The data is yours &mdash; exportable, portable, queryable.
+    </p>
+
+    <!-- Steps -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {[
+        {
+          step: "01",
+          title: "Connect your data",
+          desc: "Calendar, email, notes, habits. Your agent sees your actual life &mdash; not a blank slate.",
+          accent: false,
+        },
+        {
+          step: "02",
+          title: "Watch it learn",
+          desc: "Every interaction enriches your personal dataset. Context compounds. Patterns emerge. Your agent gets smarter.",
+          accent: true,
+        },
+        {
+          step: "03",
+          title: "You own the output",
+          desc: "Export it, query it, take it anywhere. Built on an open standard. No lock-in by design.",
+          accent: false,
+        },
+      ].map(({ step, title, desc, accent }) => (
+        <div class:list={[
+          "rounded-xl p-5 sm:p-6 border transition-colors",
+          accent
+            ? "bg-[var(--surface-2)] border-[var(--mars-orange)]/20"
+            : "bg-[var(--surface-1)] border-[var(--border-subtle)] hover:border-[var(--border-medium)]"
+        ]}>
+          <span class="font-mono text-xs text-[var(--mars-orange)] block mb-3">{step}</span>
+          <h3 class="font-mono font-bold text-sm text-[var(--text-primary)] mb-2">{title}</h3>
+          <p class="text-sm text-[var(--text-secondary)] leading-relaxed" set:html={desc} />
+        </div>
+      ))}
+    </div>
+
+    <!-- Gamification callout -->
+    <div class="mt-8 rounded-xl p-5 sm:p-6 border border-[var(--border-subtle)] bg-[var(--surface-1)]">
+      <div class="flex items-start gap-4">
+        <span class="text-lg mt-0.5">&#x1F3AF;</span>
+        <div>
+          <h3 class="font-mono font-bold text-sm text-[var(--text-primary)] mb-1">Not a settings page. Quests.</h3>
+          <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+            Your first quest: connect your calendar. Watch your agent prepare for tomorrow's meeting. Each step shows real value &mdash; not configuration.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

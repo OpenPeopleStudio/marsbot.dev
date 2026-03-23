@@ -1,0 +1,100 @@
+---
+// Early Access CTA — wired to Supabase CRM
+---
+
+<section id="early-access" class="relative py-20 sm:py-28 px-4 sm:px-6">
+  <div class="max-w-lg mx-auto text-center">
+
+    <!-- Section label -->
+    <div class="flex items-center justify-center gap-3 mb-6">
+      <span class="w-6 h-px bg-[var(--mars-orange)]"></span>
+      <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-[3px]">Early Access</span>
+      <span class="w-6 h-px bg-[var(--mars-orange)]"></span>
+    </div>
+
+    <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-4 tracking-tight">
+      Be first.
+    </h2>
+    <p class="text-sm text-[var(--text-secondary)] mb-8 leading-relaxed">
+      marsbot is in private beta. Join the waitlist and we'll reach out when your access is ready.
+    </p>
+
+    <!-- Email form -->
+    <form id="waitlist-form" class="flex gap-2 max-w-md mx-auto mb-4">
+      <input
+        id="waitlist-email"
+        type="email"
+        required
+        placeholder="you@example.com"
+        class="flex-1 rounded-lg px-4 py-3 text-sm bg-[var(--surface-1)] border border-[var(--border-medium)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] font-mono focus:outline-none focus:border-[var(--mars-orange)] transition-colors"
+      />
+      <button id="waitlist-btn" type="submit" class="btn-primary text-sm whitespace-nowrap">
+        Join waitlist
+      </button>
+    </form>
+
+    <!-- Success state (hidden by default) -->
+    <div id="waitlist-success" class="hidden max-w-md mx-auto mb-4 py-3 px-4 rounded-lg border border-[var(--success)]/30 bg-[var(--success)]/5">
+      <p class="text-sm font-mono" style="color: var(--success);">You're on the list. We'll be in touch.</p>
+    </div>
+
+    <!-- Error state (hidden by default) -->
+    <div id="waitlist-error" class="hidden max-w-md mx-auto mb-4 py-3 px-4 rounded-lg border border-[var(--error)]/30 bg-[var(--error)]/5">
+      <p class="text-sm font-mono" style="color: var(--error);">Something went wrong. Try again.</p>
+    </div>
+
+    <p class="text-[10px] font-mono text-[var(--text-muted)]">
+      No spam. We'll contact you personally.
+    </p>
+
+    <div class="mt-8 pt-6 border-t border-[var(--border-subtle)]">
+      <a
+        href="https://github.com/open-people-studio"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+      >
+        Building in public → follow on GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById("waitlist-form") as HTMLFormElement;
+  const emailInput = document.getElementById("waitlist-email") as HTMLInputElement;
+  const btn = document.getElementById("waitlist-btn") as HTMLButtonElement;
+  const successEl = document.getElementById("waitlist-success")!;
+  const errorEl = document.getElementById("waitlist-error")!;
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    if (!email) return;
+
+    btn.disabled = true;
+    btn.textContent = "Joining…";
+    errorEl.classList.add("hidden");
+
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        form.classList.add("hidden");
+        successEl.classList.remove("hidden");
+      } else {
+        errorEl.classList.remove("hidden");
+        btn.disabled = false;
+        btn.textContent = "Join waitlist";
+      }
+    } catch {
+      errorEl.classList.remove("hidden");
+      btn.disabled = false;
+      btn.textContent = "Join waitlist";
+    }
+  });
+</script>

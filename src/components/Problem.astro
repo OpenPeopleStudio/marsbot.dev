@@ -1,0 +1,54 @@
+---
+// Problem section — the data asymmetry
+---
+
+<section id="problem" class="relative py-20 sm:py-28 px-4 sm:px-6">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Section label -->
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-6 h-px bg-[var(--mars-orange)]"></span>
+      <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-[3px]">The Problem</span>
+    </div>
+
+    <h2 class="text-2xl sm:text-3xl font-mono font-bold text-[var(--text-primary)] mb-4 tracking-tight">
+      They know you better than you know yourself.
+    </h2>
+    <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl mb-12 leading-relaxed">
+      Corporations have spent decades building structured datasets about every person on the internet. You have none of that about yourself. As AI gets more capable, this gap becomes a chasm.
+    </p>
+
+    <!-- Problem cards -->
+    <div class="space-y-px">
+      {[
+        {
+          num: "01",
+          title: "Data asymmetry",
+          desc: "Corporations invest billions structuring data about you — you don't even have access to most of it. The agent that knows you best isn't yours."
+        },
+        {
+          num: "02",
+          title: "Context-blind AI",
+          desc: "AI agents are powerful but useless without personal context. Your data is scattered across dozens of siloed apps. Your agent knows none of it."
+        },
+        {
+          num: "03",
+          title: "No guided path",
+          desc: "Learning AI has no guided path. You either figure it out alone, get overwhelmed by options, or never start at all."
+        }
+      ].map(({ num, title, desc }) => (
+        <div class="flex items-start gap-4 sm:gap-6 px-5 sm:px-6 py-5 bg-[var(--surface-1)] border border-[var(--border-subtle)] first:rounded-t-xl last:rounded-b-xl hover:border-[var(--border-medium)] transition-colors">
+          <span class="font-mono text-xs text-[var(--mars-orange)] mt-0.5 shrink-0">{num}</span>
+          <div>
+            <h3 class="font-mono font-bold text-sm text-[var(--text-primary)] mb-1">{title}</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed">{desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <p class="text-sm text-[var(--text-muted)] mt-8 max-w-2xl italic">
+      The gap between what AI could know about you and what it actually knows &mdash; that's the problem we're closing.
+    </p>
+  </div>
+</section>

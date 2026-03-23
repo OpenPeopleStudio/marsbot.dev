@@ -3,27 +3,27 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 /* ─── Constants ─── */
 
-const TYPEWRITER_TEXT = "Your AI should run on your hardware, speak your language, and answer to you alone.";
+const TYPEWRITER_TEXT = "Corporations invested billions structuring data about you. We're giving you the same thing.";
 const SCENE_DURATIONS = [4500, 4000, 4500]; // ms; scene 3 (Proof) holds
 
 const STACK_LAYERS = [
-  { label: "Gateway", sublabel: "always-on · never leaves home" },
-  { label: "Runtime", sublabel: "budget-aware · skill-routed" },
-  { label: "Channels", sublabel: "meets you where you are" },
-  { label: "Surfaces", sublabel: "native on every screen" },
+  { label: "Personal Dataset", sublabel: "growing with every interaction" },
+  { label: "Context Engine", sublabel: "learns your patterns over time" },
+  { label: "Agent Layer", sublabel: "acts on your behalf" },
+  { label: "Portable Standard", sublabel: "takes it with you" },
 ];
 
-const STATS = [
-  { value: 99, label: "tools" },
-  { value: 6, label: "providers" },
-  { value: 22, label: "skill packs" },
-  { value: 6, label: "channels" },
+const PROGRESSION = [
+  { label: "Day 1", desc: "agent starts learning" },
+  { label: "Week 1", desc: "context compounds" },
+  { label: "Month 1", desc: "dataset is yours to export" },
+  { label: "Forever", desc: "portable to any system" },
 ];
 
-const SCENE_NAMES = ["The Void", "The Awakening", "The Stack", "The Proof"];
+const SCENE_NAMES = ["The Asymmetry", "The Convergence", "The Stack", "The Arc"];
 const MARS_ORANGE = "#e8622a";
 
-/* ─── Scene 0: The Void ─── */
+/* ─── Scene 0: The Asymmetry ─── */
 
 function SceneVoid() {
   const [displayed, setDisplayed] = useState("");
@@ -37,7 +37,7 @@ function SceneVoid() {
       } else {
         clearInterval(interval);
       }
-    }, 40);
+    }, 38);
     return () => clearInterval(interval);
   }, []);
 
@@ -67,7 +67,7 @@ function SceneVoid() {
   );
 }
 
-/* ─── Scene 1: The Awakening ─── */
+/* ─── Scene 1: The Convergence ─── */
 
 function SceneAwakening() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -118,7 +118,6 @@ function SceneAwakening() {
       const convergeProgress = Math.min(elapsed / 1.8, 1);
       const eased = 1 - Math.pow(1 - convergeProgress, 3);
 
-      // Glow
       const glowR = 28 + eased * 28;
       const glowAlpha = eased * 0.45;
       const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
@@ -129,7 +128,6 @@ function SceneAwakening() {
       ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
       ctx.fill();
 
-      // Core ring
       if (eased > 0.3) {
         ctx.beginPath();
         ctx.arc(cx, cy, 22 * eased, 0, Math.PI * 2);
@@ -138,7 +136,6 @@ function SceneAwakening() {
         ctx.stroke();
       }
 
-      // Particles
       for (const p of particles) {
         let px: number, py: number;
         if (convergeProgress < 1) {
@@ -182,7 +179,7 @@ function SceneAwakening() {
           className="font-mono text-xs tracking-widest uppercase"
           style={{ color: "var(--text-muted)" }}
         >
-          hardware-native · trust-gated · fully yours
+          context-native · compounding · fully yours
         </span>
       </motion.div>
     </div>
@@ -195,7 +192,6 @@ function SceneStack() {
   return (
     <div className="flex flex-col items-center justify-center h-full px-6">
       <div className="flex flex-col items-stretch w-full max-w-xs sm:max-w-sm gap-2 relative">
-        {/* Vertical connector line */}
         <div
           className="absolute left-[1.125rem] top-4 bottom-4 w-px pointer-events-none"
           style={{ background: "var(--border-subtle)" }}
@@ -210,7 +206,6 @@ function SceneStack() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, delay: i * 0.28, ease: "easeOut" }}
           >
-            {/* Node dot */}
             <span
               className="relative z-10 w-2 h-2 rounded-full shrink-0"
               style={{ background: MARS_ORANGE }}
@@ -236,7 +231,6 @@ function SceneStack() {
               </div>
             </div>
 
-            {/* Animated data flow dot */}
             <motion.span
               className="w-1.5 h-1.5 rounded-full shrink-0"
               style={{ background: MARS_ORANGE }}
@@ -255,65 +249,7 @@ function SceneStack() {
   );
 }
 
-/* ─── Scene 3: The Proof ─── */
-
-function useCountUp(target: number, durationMs: number, delayMs: number) {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    let raf: number;
-    const timeout = setTimeout(() => {
-      const start = performance.now();
-      function step(ts: number) {
-        const progress = Math.min((ts - start) / durationMs, 1);
-        setValue(Math.round(progress * target));
-        if (progress < 1) raf = requestAnimationFrame(step);
-      }
-      raf = requestAnimationFrame(step);
-    }, delayMs);
-
-    return () => {
-      clearTimeout(timeout);
-      cancelAnimationFrame(raf);
-    };
-  }, [target, durationMs, delayMs]);
-
-  return value;
-}
-
-function StatCard({
-  value,
-  label,
-  delayMs,
-}: {
-  value: number;
-  label: string;
-  delayMs: number;
-}) {
-  const count = useCountUp(value, 800, delayMs);
-  return (
-    <motion.div
-      className="glass-card rounded-xl border px-3 py-4 text-center flex-1"
-      style={{ borderColor: "var(--border-medium)" }}
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: delayMs / 1000, duration: 0.4 }}
-    >
-      <div
-        className="font-mono font-bold text-2xl sm:text-3xl"
-        style={{ color: MARS_ORANGE }}
-      >
-        {count}
-      </div>
-      <div
-        className="font-mono text-[10px] sm:text-xs mt-1"
-        style={{ color: "var(--text-muted)" }}
-      >
-        {label}
-      </div>
-    </motion.div>
-  );
-}
+/* ─── Scene 3: The Arc ─── */
 
 function SceneProof() {
   return (
@@ -325,16 +261,31 @@ function SceneProof() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
       >
-        Not a wrapper. A runtime.
+        Your dataset compounds. Your agent gets smarter.
       </motion.p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 w-full max-w-lg">
-        {STATS.map((stat, i) => (
-          <StatCard
-            key={stat.label}
-            value={stat.value}
-            label={stat.label}
-            delayMs={i * 130}
-          />
+        {PROGRESSION.map((step, i) => (
+          <motion.div
+            key={step.label}
+            className="glass-card rounded-xl border px-3 py-4 text-center flex-1"
+            style={{ borderColor: "var(--border-medium)" }}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.13, duration: 0.4 }}
+          >
+            <div
+              className="font-mono font-bold text-lg sm:text-xl"
+              style={{ color: MARS_ORANGE }}
+            >
+              {step.label}
+            </div>
+            <div
+              className="font-mono text-[10px] sm:text-xs mt-1"
+              style={{ color: "var(--text-muted)" }}
+            >
+              {step.desc}
+            </div>
+          </motion.div>
         ))}
       </div>
       <motion.div
@@ -346,8 +297,8 @@ function SceneProof() {
         <a href="/coach" className="btn-primary text-sm">
           Talk to the Coach
         </a>
-        <a href="/docs" className="btn-secondary text-sm">
-          Read the Docs
+        <a href="/lean-canvas" className="btn-secondary text-sm">
+          View the Canvas
         </a>
       </motion.div>
     </div>
@@ -379,23 +330,23 @@ function ReducedMotionView() {
         ))}
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-lg mx-auto">
-        {STATS.map((s) => (
+        {PROGRESSION.map((s) => (
           <div
             key={s.label}
             className="glass-card rounded-lg border px-3 py-3 text-center"
             style={{ borderColor: "var(--border-medium)" }}
           >
             <div
-              className="font-mono font-bold text-2xl"
+              className="font-mono font-bold text-xl"
               style={{ color: MARS_ORANGE }}
             >
-              {s.value}
+              {s.label}
             </div>
             <div
               className="font-mono text-xs mt-1"
               style={{ color: "var(--text-muted)" }}
             >
-              {s.label}
+              {s.desc}
             </div>
           </div>
         ))}
@@ -404,8 +355,8 @@ function ReducedMotionView() {
         <a href="/coach" className="btn-primary text-sm">
           Talk to the Coach
         </a>
-        <a href="/docs" className="btn-secondary text-sm">
-          Read the Docs
+        <a href="/lean-canvas" className="btn-secondary text-sm">
+          View the Canvas
         </a>
       </div>
     </div>
@@ -469,7 +420,6 @@ export default function HeroInversion() {
   const [scene, setScene] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Only animate when in viewport
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -481,7 +431,6 @@ export default function HeroInversion() {
     return () => io.disconnect();
   }, []);
 
-  // Auto-advance scenes; scene 3 (Proof) holds
   useEffect(() => {
     if (!isVisible || prefersReduced || scene >= SCENE_DURATIONS.length) return;
     timerRef.current = setTimeout(() => {
@@ -504,7 +453,6 @@ export default function HeroInversion() {
       ref={containerRef}
       className="glass-card rounded-2xl border border-[var(--border-medium)] overflow-hidden max-w-3xl mx-auto"
     >
-      {/* Scene area */}
       <div className="relative" style={{ height: 340 }}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -520,7 +468,6 @@ export default function HeroInversion() {
         </AnimatePresence>
       </div>
 
-      {/* Scene indicator */}
       <SceneDots scene={scene} onJump={jumpToScene} />
     </div>
   );
