@@ -1,7 +1,7 @@
 # marsbot.dev — Mars project face
 
 **Date:** 2026-08-27
-**Status:** Approved (brainstorm) — awaiting spec review
+**Status:** Landed 0.2.0 (2026-08-27)
 **Owner:** Mars (OpenPeopleStudio)
 **Repo:** `~/mars/marsbot.dev` · public `OpenPeopleStudio/marsbot.dev`
 **Live:** https://marsbot.dev · Vercel project `marsbot-dev`

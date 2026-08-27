@@ -1,31 +1,11 @@
 ---
 import Base from "../layouts/Base.astro";
-import Nav from "../components/Nav.astro";
-import Hero from "../components/Hero.astro";
-import HeroInversion from "../components/HeroInversion";
-import Problem from "../components/Problem.astro";
-import HowItWorks from "../components/HowItWorks.astro";
-import DataOwnership from "../components/DataOwnership.astro";
-import EarlyAccess from "../components/EarlyAccess.astro";
-import Roadmap from "../components/Roadmap.astro";
-import Changelog from "../components/Changelog.astro";
-import LongerArc from "../components/LongerArc.astro";
-import Footer from "../components/Footer.astro";
+import Starfield from "../components/Starfield.astro";
+import Face from "../components/Face.astro";
+import { COPY } from "../copy.ts";
 ---
 
-<Base>
-  <Nav />
-  <main>
-    <Hero>
-      <HeroInversion client:load />
-    </Hero>
-    <Problem />
-    <HowItWorks />
-    <DataOwnership />
-    <EarlyAccess />
-    <Roadmap />
-    <section id="changelog"><Changelog /></section>
-    <LongerArc />
-  </main>
-  <Footer />
+<Base title={COPY.title} description={COPY.description}>
+  <Starfield />
+  <Face />
 </Base>

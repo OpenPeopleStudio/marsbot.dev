@@ -1,0 +1,59 @@
+---
+const near = [
+  [4, 8], [12, 22], [18, 61], [23, 14], [31, 77], [37, 33], [41, 5],
+  [48, 48], [55, 19], [62, 71], [68, 9], [74, 42], [81, 88], [87, 27],
+  [93, 54], [7, 91], [15, 39], [29, 58], [44, 83], [59, 36], [71, 64],
+  [84, 11], [96, 73], [9, 46], [26, 3], [52, 92], [66, 51], [78, 17],
+].map(([x, y]) => `${x}vw ${y}vh 0 0.7px rgba(255,255,255,0.55)`).join(",");
+
+const far = [
+  [2, 17], [8, 64], [14, 31], [21, 86], [27, 12], [33, 49], [39, 73],
+  [46, 6], [51, 28], [57, 81], [63, 15], [69, 57], [76, 94], [82, 38],
+  [88, 70], [94, 21], [6, 53], [19, 4], [35, 91], [47, 44], [61, 8],
+  [73, 32], [85, 60], [91, 96], [11, 25], [24, 69], [42, 16], [58, 47],
+  [77, 79], [98, 13],
+].map(([x, y]) => `${x}vw ${y}vh 0 0.45px rgba(255,255,255,0.22)`).join(",");
+---
+
+<div class="starfield" aria-hidden="true">
+  <div class="stars near" style={`box-shadow: ${near}`}></div>
+  <div class="stars far" style={`box-shadow: ${far}`}></div>
+</div>
+
+<style>
+  .starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .stars {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    border-radius: 50%;
+  }
+
+  .near {
+    animation: star-drift 180s linear infinite;
+  }
+
+  .far {
+    animation: star-drift 280s linear infinite reverse;
+  }
+
+  @keyframes star-drift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-2vw, -3vh, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .near,
+    .far {
+      animation: none;
+    }
+  }
+</style>

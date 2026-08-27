@@ -1,0 +1,164 @@
+---
+import { COPY } from "../copy.ts";
+---
+
+<main class="face">
+  <header class="mark">
+    <span class="glyph">{COPY.marks.mars}</span>
+    <span>{COPY.wordmark}</span>
+  </header>
+
+  <p class="lede">{COPY.lede}</p>
+
+  <div class="panel">
+    <div class="row">
+      <span class="id">
+        <span class="glyph sol">{COPY.marks.sol}</span>
+        {COPY.sol.name}
+      </span>
+      <span class="line">{COPY.sol.line}</span>
+    </div>
+    <div class="row">
+      <span class="id">{COPY.desk.name}</span>
+      <span class="line">{COPY.desk.line}</span>
+    </div>
+    <div class="row">
+      <span class="id">{COPY.gateway.name}</span>
+      <span class="line">{COPY.gateway.line}</span>
+    </div>
+  </div>
+
+  <p class="layers">{COPY.layers}</p>
+  <p class="refusal">{COPY.refusal}</p>
+
+  <footer class="foot">
+    <a class="studio" href={COPY.footer.href}>
+      (<span class="ember"> · </span>)
+      {COPY.footer.studio}
+    </a>
+    <span class="copy">{COPY.footer.copyright}</span>
+  </footer>
+</main>
+
+<style>
+  .face {
+    position: relative;
+    z-index: 1;
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 4.5rem 1.5rem 8rem;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mark {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+  }
+
+  .glyph {
+    color: var(--label-muted);
+  }
+
+  .lede {
+    margin: 4.5rem 0 0;
+    font-size: 1.375rem;
+    line-height: 1.45;
+    font-weight: 400;
+    color: var(--label);
+  }
+
+  .panel {
+    margin-top: 2.75rem;
+    border: 0.6px solid var(--stroke);
+    padding: 1.15rem 1.2rem;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.85rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .row + .row {
+    border-top: 0.6px solid var(--stroke);
+  }
+
+  .id {
+    color: var(--label);
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+  }
+
+  .line {
+    color: var(--label-muted);
+  }
+
+  .layers {
+    margin: 2.25rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--label-muted);
+  }
+
+  .refusal {
+    margin: 1rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--label-faint);
+  }
+
+  .foot {
+    margin-top: auto;
+    padding-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+  }
+
+  .studio {
+    color: var(--label-muted);
+    text-decoration: none;
+  }
+
+  .studio:hover {
+    color: var(--label);
+  }
+
+  .ember {
+    color: var(--ember);
+  }
+
+  .copy {
+    color: var(--label-faint);
+  }
+
+  @media (min-width: 640px) {
+    .lede {
+      font-size: 1.625rem;
+    }
+
+    .row {
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 1.5rem;
+      align-items: baseline;
+    }
+
+    .line {
+      text-align: right;
+    }
+  }
+</style>

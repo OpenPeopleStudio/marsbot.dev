@@ -1,33 +1,35 @@
-# marsbot.dev — Public Brand Site
+# marsbot.dev — Mars project face
+
+Public one-pager at https://marsbot.dev. Honest face of the Mars project. Not a waitlist, not a raise memo, not the chat-surface product.
+
+**Spec:** `docs/superpowers/specs/2026-08-27-marsbot-dev-project-face-design.md`
 
 ## Stack
-- **Framework**: Astro 5
-- **Islands**: React 19 (hero demo, ecosystem map, breathing line)
-- **Styling**: Tailwind CSS 4 + CSS custom properties (void-forward aesthetic)
-- **Content**: Astro Content Collections (MDX) for docs + changelog
-- **Deployment**: Vercel (static)
-- **Icons**: Lucide React
-- **Animations**: Framer Motion (islands only)
+- **Framework:** Astro 5 (static)
+- **Styling:** Tailwind 4 + bible tokens in `src/styles/globals.css`
+- **Copy:** `src/copy.ts` (locked; tests)
+- **Deploy:** Vercel project `marsbot-dev` · domains `marsbot.dev` / `www.marsbot.dev`
 
-## Key Paths
-- `src/layouts/` — Base and Docs layouts
-- `src/pages/` — Astro pages (index, ecosystem, docs)
-- `src/components/` — Astro (static) + React (islands) components
-- `src/content/` — Content collections (changelog, docs)
-- `src/styles/globals.css` — Design tokens
-- `public/` — Static assets
+## Key paths
+- `src/copy.ts` — canonical strings
+- `src/pages/index.astro` — the only route
+- `src/layouts/Base.astro` — head / fonts / meta
+- `src/components/Starfield.astro` — CSS stars
+- `src/components/Face.astro` — mark, lede, three rows, footer
+- `vercel.json` — 301s for retired pages
+- `tests/` — copy + built-HTML + redirect smoke
 
 ## Conventions
-- Static components use `.astro` files (zero JS)
-- Interactive components use `.tsx` with `client:visible` or `client:load`
-- Design tokens ported from mars-hq globals.css (void palette)
-- Content is MDX in `src/content/` — not hardcoded in components
-- Fonts: JetBrains Mono (display/mono) + Inter (body)
+- Wordmark **Mars**. Desk surface **mars.bot**. Gateway **marsbase**. Company **Open People**.
+- Sans = system stack (Open People). Mono = JetBrains Mono (Mars).
+- Ember `#e87a3a` only as the footer `( · )` dot.
+- No React islands. No waitlist. No changelog. Do not advertise `api.marsbot.dev`.
+- Production push is Tom's.
 
 ## Build
 - Dev: `npm run dev`
+- Test: `npm test`
 - Build: `npm run build`
-- Preview: `npm run preview`
 
 ---
 ## Ownership

@@ -1,4 +1,11 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/coach", "destination": "/", "statusCode": 301 },
+    { "source": "/ecosystem", "destination": "/", "statusCode": 301 },
+    { "source": "/lean-canvas", "destination": "/", "statusCode": 301 },
+    { "source": "/docs", "destination": "/", "statusCode": 301 },
+    { "source": "/docs/:path*", "destination": "/", "statusCode": 301 }
+  ]
 }

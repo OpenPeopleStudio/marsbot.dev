@@ -1,0 +1,4 @@
+# ACTIONS — sim-run effort per VERSION stamp (newest first)
+# Required field: tools=<n>  (agent tool-call count for the slice)
+
+0.2.0 tools=96
